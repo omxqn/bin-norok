@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
+  provider  = "sqlite"
   url       = env("DATABASE_URL")
 }
 
@@ -44,8 +44,8 @@ model MuseumHall {
   titleEn          String
   descriptionAr    String
   descriptionEn    String
-  longDescriptionAr String?  @db.Text
-  longDescriptionEn String?  @db.Text
+  longDescriptionAr String?  
+  longDescriptionEn String?  
   imagePath        String   @default("/images/museum/placeholders/hall-default.jpg")
   order            Int      @default(0)
   published        Boolean  @default(true)
@@ -53,8 +53,36 @@ model MuseumHall {
   updatedAt        DateTime @updatedAt
 
   collectionItems CollectionItem[]
+  images          HallImage[]
 
   @@map("museum_halls")
+}
+
+// ─── Hall Gallery Images ──────────────────────────────
+
+model HallImage {
+  id        String   @id @default(cuid())
+  hallId    String
+  path      String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  hall MuseumHall @relation(fields: [hallId], references: [id], onDelete: Cascade)
+
+  @@map("hall_images")
+}
+
+// ─── Guestbook (visitor testimonials, admin-approved) ──
+
+model GuestbookEntry {
+  id        String   @id @default(cuid())
+  name      String
+  origin    String?
+  message   String
+  approved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("guestbook_entries")
 }
 
 // ─── Collection Categories ────────────────────────────
@@ -78,15 +106,15 @@ model CollectionItem {
   titleEn            String
   descriptionAr      String
   descriptionEn      String
-  longDescriptionAr  String?  @db.Text
-  longDescriptionEn  String?  @db.Text
+  longDescriptionAr  String?  
+  longDescriptionEn  String?  
   categoryId         String
   hallId             String?
   period             String?
   imagePath          String   @default("/images/museum/placeholders/item-default.jpg")
   condition          String?
-  historicalNoteAr   String?  @db.Text
-  historicalNoteEn   String?  @db.Text
+  historicalNoteAr   String?  
+  historicalNoteEn   String?  
   featured           Boolean  @default(false)
   published          Boolean  @default(true)
   createdAt          DateTime @default(now())
@@ -124,9 +152,9 @@ model Booking {
   preferredDate    DateTime
   preferredTime    String
   numberOfVisitors Int
-  notes            String?       @db.Text
+  notes            String?       
   status           BookingStatus @default(PENDING)
-  adminNotes       String?       @db.Text
+  adminNotes       String?       
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
@@ -142,7 +170,7 @@ model ContactMessage {
   phone      String?
   category   String   @default("general")
   subject    String
-  message    String   @db.Text
+  message    String   
   isRead     Boolean  @default(false)
   isArchived Boolean  @default(false)
   createdAt  DateTime @default(now())
@@ -164,8 +192,8 @@ model NewsEvent {
   titleEn   String
   excerptAr String?
   excerptEn String?
-  contentAr String        @db.Text
-  contentEn String        @db.Text
+  contentAr String        
+  contentEn String        
   type      NewsEventType @default(NEWS)
   imagePath String?
   featured  Boolean       @default(false)
@@ -182,8 +210,8 @@ model NewsEvent {
 model SiteSetting {
   id        String   @id @default(cuid())
   key       String   @unique
-  valueAr   String   @db.Text
-  valueEn   String   @db.Text
+  valueAr   String   
+  valueEn   String   
   updatedAt DateTime @updatedAt
 
   @@map("site_settings")
@@ -197,7 +225,7 @@ model AuditLog {
   action    String
   entity    String
   entityId  String?
-  details   String?  @db.Text
+  details   String?  
   createdAt DateTime @default(now())
 
   user User? @relation(fields: [userId], references: [id])

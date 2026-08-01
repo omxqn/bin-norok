@@ -1,0 +1,132 @@
+{
+  "Index": {
+    "title": "Bin Norouk Museum | Memory of Sohar and Omani Heritage",
+    "description": "Discover the rich history of Sohar and Omani heritage at Bin Norouk Museum."
+  },
+  "Navigation": {
+    "home": "Home",
+    "about": "About Us",
+    "halls": "Museum Halls",
+    "visit": "Plan Your Visit",
+    "contact": "Contact Us",
+    "bookTickets": "Book Tickets"
+  },
+  "Footer": {
+    "description": "Preserving the rich history of Sohar and the Omani heritage for future generations.",
+    "quickLinks": "Quick Links",
+    "contact": "Contact",
+    "followUs": "Follow Us",
+    "rights": "All rights reserved.",
+    "address": "Sohar, Sultanate of Oman",
+    "phone": "+968 1234 5678",
+    "email": "info@binnorouk.om"
+  },
+  "Hero": {
+    "subtitle": "Welcome to",
+    "title": "Bin Norouk Museum",
+    "description": "A journey through time to discover the memory of Sohar and the authentic Omani heritage.",
+    "cta": "Plan Your Visit",
+    "secondaryCta": "Explore Halls"
+  },
+  "Stats": {
+    "artifacts": "5000+",
+    "artifactsLabel": "Historical Artifacts",
+    "eras": "3",
+    "erasLabel": "Historical Eras",
+    "visitors": "50K+",
+    "visitorsLabel": "Annual Visitors",
+    "halls": "7",
+    "hallsLabel": "Exhibition Halls"
+  },
+  "FeaturedHalls": {
+    "title": "Featured Halls",
+    "subtitle": "Discover our most prominent exhibitions",
+    "viewAll": "View All Halls",
+    "hall1Title": "Omani House Hall",
+    "hall1Desc": "Experience traditional Omani life and architecture.",
+    "hall2Title": "Maritime History",
+    "hall2Desc": "Sohar's rich trading history and maritime legacy.",
+    "hall3Title": "Weapons & Armor",
+    "hall3Desc": "Traditional Omani weaponry and defense artifacts."
+  },
+  "About": {
+    "title": "About Bin Norouk Museum",
+    "description": "Discover our story, mission, and the history behind our collection.",
+    "missionTitle": "Our Mission",
+    "missionDesc": "To preserve and showcase the authentic history of Sohar and Omani heritage.",
+    "visionTitle": "Our Vision",
+    "visionDesc": "To be the leading cultural hub in Oman, bridging the past with the future."
+  },
+  "Halls": {
+    "title": "Museum Halls",
+    "description": "Explore our diverse exhibition halls, each telling a unique story of Omani heritage.",
+    "hall1": "Omani House Hall",
+    "hall2": "Maritime History",
+    "hall3": "Weapons & Armor",
+    "hall4": "Traditional Crafts",
+    "hall5": "Sohar Through Ages"
+  },
+  "Visit": {
+    "title": "Plan Your Visit",
+    "description": "Everything you need to know before visiting Bin Norouk Museum.",
+    "hoursTitle": "Opening Hours",
+    "hoursDesc": "Saturday to Thursday: 9:00 AM - 5:00 PM\nFriday: 1:30 PM - 6:00 PM",
+    "locationTitle": "Location",
+    "locationDesc": "Sohar, Sultanate of Oman",
+    "bookTitle": "Book Your Tickets",
+    "formName": "Full Name",
+    "formEmail": "Email Address",
+    "formPhone": "Phone Number",
+    "formVisitType": "Visit Type",
+    "formDate": "Date of Visit",
+    "formTime": "Preferred Time",
+    "formTickets": "Number of Visitors",
+    "formNotes": "Notes (optional)",
+    "formSubmit": "Book Now",
+    "formSuccess": "Your booking request has been received! We will contact you to confirm.",
+    "formError": "Something went wrong. Please check your details and try again.",
+    "formRateLimit": "Too many requests. Please try again later.",
+    "formAnother": "Make Another Booking"
+  },
+  "Contact": {
+    "title": "Contact Us",
+    "description": "Get in touch with us for inquiries, group bookings, or feedback.",
+    "formName": "Your Name",
+    "formEmail": "Your Email",
+    "formPhone": "Phone (optional)",
+    "formCategory": "Category",
+    "formSubject": "Subject",
+    "formMessage": "Your Message",
+    "formSubmit": "Send Message",
+    "formSuccess": "Your message has been sent! We will get back to you soon.",
+    "formError": "Something went wrong. Please check your details and try again.",
+    "formRateLimit": "Too many requests. Please try again later.",
+    "formAnother": "Send Another Message"
+  },
+  "Collections": {
+    "title": "Our Collections",
+    "description": "Browse our extensive collection of historical artifacts.",
+    "filterAll": "All",
+    "filterWeapons": "Weapons",
+    "filterJewelry": "Jewelry",
+    "filterManuscripts": "Manuscripts",
+    "filterPottery": "Pottery"
+  },
+  "VirtualTour": {
+    "title": "Virtual Tour",
+    "description": "Experience Bin Norouk Museum from anywhere in the world.",
+    "startTour": "Start Virtual Tour"
+  },
+  "Education": {
+    "title": "Educational Programs",
+    "description": "Inspiring the next generation through interactive learning."
+  },
+  "Sohar": {
+    "title": "Sohar Heritage",
+    "description": "The deep-rooted history of Sohar, the ancient capital of Oman."
+  },
+  "News": {
+    "title": "News & Events",
+    "description": "Stay updated with the latest happenings at the museum."
+  }
+}
