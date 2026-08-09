@@ -7,6 +7,7 @@ import { Guestbook } from "@/components/visitors/Guestbook";
 import { getLocalized, formatDate } from "@/lib/utils";
 
 interface OfficialVisit {
+  [key: string]: any;
   id: string;
   nameAr: string;
   nameEn: string;
@@ -19,6 +20,7 @@ interface OfficialVisit {
 }
 
 interface NewsEvent {
+  [key: string]: any;
   id: string;
   titleAr: string;
   titleEn: string;
@@ -33,6 +35,7 @@ interface NewsEvent {
 }
 
 interface GuestbookEntry {
+  [key: string]: any;
   id: string;
   nameAr: string;
   nameEn: string;
