@@ -35,7 +35,7 @@ export function Hero() {
   ];
 
   return (
-    <section className="relative min-h-[100svh] flex flex-col justify-center overflow-hidden">
+    <section className="relative min-h-[100svh] flex flex-col overflow-hidden">
       {/* Background slideshow */}
       <div className="absolute inset-0 z-0">
         <AnimatePresence mode="popLayout">
@@ -64,7 +64,7 @@ export function Hero() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 pt-28 pb-40 md:pb-32">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 pt-28 pb-16 flex-1 flex flex-col justify-center">
         <motion.div
           initial={{ opacity: 0, y: reduceMotion ? 0 : 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -111,12 +111,12 @@ export function Hero() {
         </motion.div>
       </div>
 
-      {/* Quick-info strip — glass panel anchored to the bottom */}
+      {/* Quick-info strip — glass panel */}
       <motion.div
         initial={{ opacity: 0, y: reduceMotion ? 0 : 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.7, duration: 0.7 }}
-        className="absolute bottom-0 inset-x-0 z-10"
+        className="relative z-10 w-full mt-auto"
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12 pb-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/10 rounded-xl overflow-hidden border border-white/15 backdrop-blur-md">

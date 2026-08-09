@@ -17,19 +17,22 @@ const visitorsContent = {
         name: "H.E. the Governor of North Al Batinah",
         title: "Governor of North Al Batinah Governorate",
         date: "2023",
-        note: "An official visit to the museum, during which the Governor expressed his appreciation for the cultural and heritage value of the collection and its role in preserving Omani memory."
+        note: "An official visit to the museum, during which the Governor expressed his appreciation for the cultural and heritage value of the collection and its role in preserving Omani memory.",
+        image: "/images/museum/halls/sultan room1.jpeg"
       },
       {
         name: "Sheikh Wali of Sohar",
         title: "Wali of Sohar",
         date: "2023",
-        note: "A courtesy visit accompanied by a delegation of officials, commending the exceptional effort in preserving Omani heritage within a distinguished private setting."
+        note: "A courtesy visit accompanied by a delegation of officials, commending the exceptional effort in preserving Omani heritage within a distinguished private setting.",
+        image: "/images/museum/halls/Ahmed norok 1.jpeg"
       },
       {
         name: "Military Delegation",
         title: "Royal Army of Oman",
         date: "2024",
-        note: "A delegation of senior officers visited the Ahmad Norok Room and the Documents Section, showing particular interest in the historical correspondences."
+        note: "A delegation of senior officers visited the Ahmad Norok Room and the Documents Section, showing particular interest in the historical correspondences.",
+        image: "/images/museum/halls/Living room.jpeg"
       }
     ],
     news: [
@@ -77,19 +80,22 @@ const visitorsContent = {
         name: "سعادة محافظ شمال الباطنة",
         title: "محافظ شمال الباطنة",
         date: "2023",
-        note: "زيارة رسمية للمتحف أبدى خلالها سعادته تقديره العالي للقيمة الثقافية والتراثية للمجموعة ودورها في حفظ الذاكرة العمانية."
+        note: "زيارة رسمية للمتحف أبدى خلالها سعادته تقديره العالي للقيمة الثقافية والتراثية للمجموعة ودورها في حفظ الذاكرة العمانية.",
+        image: "/images/museum/halls/sultan room1.jpeg"
       },
       {
         name: "الشيخ والي صحار",
         title: "والي صحار",
         date: "2023",
-        note: "زيارة مجاملة برفقة وفد من المسؤولين، أثنى خلالها على الجهود الاستثنائية في الحفاظ على التراث العماني في إطار خاص متميز."
+        note: "زيارة مجاملة برفقة وفد من المسؤولين، أثنى خلالها على الجهود الاستثنائية في الحفاظ على التراث العماني في إطار خاص متميز.",
+        image: "/images/museum/halls/Ahmed norok 1.jpeg"
       },
       {
         name: "وفد عسكري",
         title: "الجيش السلطاني العماني",
         date: "2024",
-        note: "زيارة وفد من كبار الضباط، أبدوا اهتمامًا خاصًا بغرفة أحمد نوروك وقسم الوثائق والمراسلات التاريخية."
+        note: "زيارة وفد من كبار الضباط، أبدوا اهتمامًا خاصًا بغرفة أحمد نوروك وقسم الوثائق والمراسلات التاريخية.",
+        image: "/images/museum/halls/Living room.jpeg"
       }
     ],
     news: [
@@ -156,13 +162,23 @@ export default function VisitorsPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-lg transition-shadow relative overflow-hidden group"
+              className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg transition-shadow relative overflow-hidden group flex flex-col"
             >
-              <div className="absolute top-0 right-0 w-20 h-20 bg-primary/5 rounded-bl-full -mr-8 -mt-8 group-hover:bg-primary/10 transition-colors"></div>
-              <div className="text-primary font-bold text-xs mb-3">{visit.date}</div>
-              <h3 className="text-lg font-bold mb-1 text-foreground">{visit.name}</h3>
-              <p className="text-xs text-gray-500 mb-4 font-semibold">{visit.title}</p>
-              <p className="text-sm text-gray-700 leading-relaxed">{visit.note}</p>
+                <div className="w-full h-56 relative overflow-hidden shrink-0 bg-gray-300">
+                  <div className="w-full h-full bg-gray-400/50 group-hover:bg-gray-400/80 transition-colors duration-500"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                  <div className="absolute bottom-4 start-4 end-4">
+                    <h3 className="text-xl font-bold text-white mb-1 drop-shadow-md">{visit.name}</h3>
+                  </div>
+                </div>
+              <div className="p-6 flex-1 flex flex-col relative bg-white">
+                <div className="absolute top-0 right-0 w-20 h-20 bg-primary/5 rounded-bl-full -mr-8 -mt-8 group-hover:bg-primary/10 transition-colors"></div>
+                <div className="flex justify-between items-center mb-3">
+                  <p className="text-sm text-primary font-bold">{visit.title}</p>
+                  <div className="bg-gray-100 text-gray-600 px-2 py-1 rounded-md text-xs font-bold">{visit.date}</div>
+                </div>
+                <p className="text-sm text-gray-700 leading-relaxed">{visit.note}</p>
+              </div>
             </motion.div>
           ))}
         </div>

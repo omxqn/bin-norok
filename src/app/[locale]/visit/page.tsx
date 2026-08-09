@@ -3,7 +3,7 @@
 import { useLocale } from "next-intl";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
-import { Clock, MapPin } from "lucide-react";
+import { Clock, MapPin, Ticket } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
 import { BookingWizard } from "@/components/visit/BookingWizard";
 
@@ -82,6 +82,43 @@ export default function VisitPage() {
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* Tickets */}
+            <div className="heritage-card p-6">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-11 h-11 bg-gold/15 rounded-xl flex items-center justify-center shrink-0">
+                  <Ticket className="w-5 h-5 text-gold-dark" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-ink">{isAr ? "أسعار التذاكر" : "Ticket Prices"}</h3>
+                  <p className="text-xs text-ink-3">{isAr ? "رسوم الدخول للمتحف" : "Museum entry fees"}</p>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <div className="bg-cream rounded-xl px-4 py-3 border border-gold/10 flex items-center justify-between">
+                  <p className="text-sm font-bold text-ink-3">{isAr ? "العمانيين" : "Omanis"}</p>
+                  <span className="text-wine font-bold text-sm">{isAr ? "١ ريال" : "1 OMR"}</span>
+                </div>
+                <div className="bg-cream rounded-xl px-4 py-3 border border-gold/10 flex items-center justify-between">
+                  <p className="text-sm font-bold text-ink-3">{isAr ? "مواطني دول الخليج" : "GCC Citizens"}</p>
+                  <span className="text-wine font-bold text-sm">{isAr ? "٢ ريال" : "2 OMR"}</span>
+                </div>
+                <div className="bg-cream rounded-xl px-4 py-3 border border-gold/10 flex items-center justify-between">
+                  <p className="text-sm font-bold text-ink-3">{isAr ? "الوافدين" : "Expats"}</p>
+                  <span className="text-wine font-bold text-sm">{isAr ? "٣ ريال" : "3 OMR"}</span>
+                </div>
+                <div className="bg-cream rounded-xl px-4 py-3 border border-gold/10">
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-sm font-bold text-wine">{isAr ? "مجاناً" : "Free Entry"}</p>
+                  </div>
+                  <p className="text-[11px] text-ink-3 leading-relaxed">
+                    {isAr 
+                      ? "الأطفال دون ١٠ سنوات، كبار السن فوق ٦٠، وذوي الاحتياجات الخاصة"
+                      : "Children under 10, Adults over 60, and people with special needs"}
+                  </p>
+                </div>
               </div>
             </div>
 
