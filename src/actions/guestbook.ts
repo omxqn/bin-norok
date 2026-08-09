@@ -17,7 +17,7 @@ export async function getApprovedGuestbookEntries() {
     where: { approved: true },
     orderBy: { createdAt: "desc" },
     take: 30,
-    select: { id: true, name: true, origin: true, message: true, createdAt: true },
+    select: { id: true, nameAr: true, nameEn: true, originAr: true, originEn: true, messageAr: true, messageEn: true, createdAt: true },
   });
 }
 
@@ -39,7 +39,15 @@ export async function submitGuestbookEntry(formData: FormData): Promise<Guestboo
 
   try {
     await prisma.guestbookEntry.create({
-      data: { name, origin: origin || null, message, approved: false },
+      data: {
+        nameAr: name,
+        nameEn: name,
+        originAr: origin || null,
+        originEn: origin || null,
+        messageAr: message,
+        messageEn: message,
+        approved: false,
+      },
     });
     return { success: true };
   } catch {

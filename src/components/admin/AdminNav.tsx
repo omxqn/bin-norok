@@ -10,7 +10,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Calendar, Library, MessageSquare, Newspaper,
-  Users, Settings, Activity, LogOut, MoreHorizontal, X,
+  Users, Settings, Activity, LogOut, MoreHorizontal, X, Briefcase
 } from "lucide-react";
 
 export interface AdminNavProps {
@@ -33,8 +33,8 @@ export function AdminNav(props: AdminNavProps) {
     { key: "dash", name: isAr ? "نظرة عامة" : "Dashboard", href: `/${locale}/admin`, icon: LayoutDashboard, badge: 0, exact: true },
     { key: "bookings", name: isAr ? "الحجوزات" : "Bookings", href: `/${locale}/admin/bookings`, icon: Calendar, badge: props.pendingBookings },
     { key: "collections", name: isAr ? "القاعات والمقتنيات" : "Collections", href: `/${locale}/admin/collections`, icon: Library, badge: 0 },
-    { key: "messages", name: isAr ? "الرسائل" : "Messages", href: `/${locale}/admin/messages`, icon: MessageSquare, badge: props.unreadMessages + props.pendingGuestbook },
-    { key: "news", name: isAr ? "الأخبار والفعاليات" : "News & Events", href: `/${locale}/admin/news`, icon: Newspaper, badge: 0 },
+    { key: "content", name: isAr ? "المحتوى التفاعلي" : "Content", href: `/${locale}/admin/content`, icon: Newspaper, badge: props.pendingGuestbook },
+    { key: "messages", name: isAr ? "الرسائل" : "Messages", href: `/${locale}/admin/messages`, icon: MessageSquare, badge: props.unreadMessages },
     { key: "users", name: isAr ? "المستخدمون" : "Users", href: `/${locale}/admin/users`, icon: Users, badge: 0 },
     { key: "settings", name: isAr ? "الإعدادات" : "Settings", href: `/${locale}/admin/settings`, icon: Settings, badge: 0 },
     { key: "logs", name: isAr ? "سجل النشاطات" : "Activity Log", href: `/${locale}/admin/logs`, icon: Activity, badge: 0 },
@@ -43,7 +43,7 @@ export function AdminNav(props: AdminNavProps) {
   const isActive = (href: string, exact?: boolean) =>
     exact ? pathname === href : pathname === href || pathname.startsWith(href + "/");
 
-  const primary = items.slice(0, 4); // Dashboard, Bookings, Collections, Messages
+  const primary = items.slice(0, 4); // Dashboard, Bookings, Collections, Content
   const rest = items.slice(4);
 
   function Badge({ count }: { count: number }) {

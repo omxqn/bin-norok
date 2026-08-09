@@ -8,32 +8,19 @@ import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Loader2, PenLine } from "lucide-react";
-import { submitGuestbookEntry, getApprovedGuestbookEntries } from "@/actions/guestbook";
+import { submitGuestbookEntry } from "@/actions/guestbook";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
-interface Entry {
-  id: string;
-  name: string;
-  origin: string | null;
-  message: string;
-}
-
 export function Guestbook() {
   const locale = useLocale();
   const isAr = locale === "ar";
-  const [entries, setEntries] = useState<Entry[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [isPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
 
-  useEffect(() => {
-    getApprovedGuestbookEntries()
-      .then(setEntries)
-      .catch(() => {});
-  }, []);
 
   function handleSubmit(formData: FormData) {
     startTransition(async () => {
@@ -56,29 +43,6 @@ export function Guestbook() {
 
   return (
     <section className="mt-20">
-      {/* Approved entries from the database */}
-      {entries.length > 0 && (
-        <div className="grid md:grid-cols-3 gap-6 mb-14">
-          {entries.map((entry, idx) => (
-            <motion.div
-              key={entry.id}
-              initial={{ opacity: 0, scale: 0.97 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: (idx % 3) * 0.1 }}
-              className="heritage-card p-6"
-            >
-              <div className="text-gold text-3xl font-serif opacity-40 leading-none mb-2">"</div>
-              <p className="text-sm text-ink-2 leading-relaxed mb-4">{entry.message}</p>
-              <div className="border-t border-gold/20 pt-3">
-                <h4 className="font-bold text-sm text-wine">{entry.name}</h4>
-                {entry.origin && <p className="text-xs text-ink-3">{entry.origin}</p>}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      )}
-
       {/* Submission form */}
       <div className="max-w-xl mx-auto heritage-card p-7 md:p-8">
         <h3 className="flex items-center gap-2 text-lg font-bold text-ink mb-1">

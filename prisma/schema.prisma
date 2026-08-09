@@ -76,13 +76,35 @@ model HallImage {
 
 model GuestbookEntry {
   id        String   @id @default(cuid())
-  name      String
-  origin    String?
-  message   String
+  nameAr    String
+  nameEn    String
+  originAr  String?
+  originEn  String?
+  messageAr String
+  messageEn String
   approved  Boolean  @default(false)
   createdAt DateTime @default(now())
 
   @@map("guestbook_entries")
+}
+
+// ─── Official Visits ──────────────────────────────────
+
+model OfficialVisit {
+  id        String   @id @default(cuid())
+  nameAr    String
+  nameEn    String
+  titleAr   String
+  titleEn   String
+  date      String
+  noteAr    String
+  noteEn    String
+  imagePath String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("official_visits")
 }
 
 // ─── Collection Categories ────────────────────────────
@@ -196,6 +218,7 @@ model NewsEvent {
   contentEn String        
   type      NewsEventType @default(NEWS)
   imagePath String?
+  link      String?
   featured  Boolean       @default(false)
   published Boolean       @default(true)
   eventDate DateTime?

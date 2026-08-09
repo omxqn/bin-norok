@@ -25,6 +25,7 @@ export interface NewsFormData {
   contentEn: string;
   type: NewsEventType;
   imagePath: string | null;
+  link: string | null;
   featured: boolean;
   published: boolean;
   eventDate: string; // yyyy-mm-dd or ""
@@ -40,6 +41,7 @@ const empty: NewsFormData = {
   contentEn: "",
   type: "NEWS",
   imagePath: "",
+  link: "",
   featured: false,
   published: true,
   eventDate: "",
@@ -54,6 +56,7 @@ export function NewsForm({ article, locale }: { article?: NewsFormData; locale: 
 
   function handleSubmit(formData: FormData) {
     const imagePath = String(formData.get("imagePath") ?? "");
+    const linkStr = String(formData.get("link") ?? "");
     const eventDateStr = String(formData.get("eventDate") ?? "");
     const data = {
       titleAr: String(formData.get("titleAr") ?? ""),
@@ -65,6 +68,7 @@ export function NewsForm({ article, locale }: { article?: NewsFormData; locale: 
       contentEn: String(formData.get("contentEn") ?? ""),
       type: String(formData.get("type") ?? "NEWS") as NewsEventType,
       imagePath: imagePath || null,
+      link: linkStr || null,
       featured: formData.get("featured") === "on",
       published: formData.get("published") === "on",
       eventDate: eventDateStr ? new Date(eventDateStr) : null,
@@ -141,6 +145,13 @@ export function NewsForm({ article, locale }: { article?: NewsFormData; locale: 
       </div>
 
       <ImageUpload initialPath={initial.imagePath} label={isAr ? "صورة المقال" : "Article Image"} />
+
+      <div className="grid sm:grid-cols-1 gap-5">
+        <div>
+          <Label htmlFor="link">{isAr ? "رابط خارجي (اختياري)" : "External Link (optional)"}</Label>
+          <Input id="link" name="link" dir="ltr" defaultValue={initial.link ?? ""} placeholder="https://" />
+        </div>
+      </div>
 
       <div className="flex flex-wrap gap-6">
         <label className="flex items-center gap-2 text-sm text-gray-700 font-medium">

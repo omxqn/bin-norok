@@ -11,6 +11,7 @@ export const newsEventSchema = z.object({
   contentEn: z.string().min(10, "Content (English) is required"),
   type: z.nativeEnum(NewsEventType),
   imagePath: z.string().optional().nullable(),
+  link: z.string().optional().nullable(),
   featured: z.boolean().default(false),
   published: z.boolean().default(true),
   eventDate: z.date().optional().nullable(),

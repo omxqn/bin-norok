@@ -64,3 +64,10 @@ export function DeleteUserButton({ id }: { id: string }) {
   const { isPending, handleDelete } = useDelete(deleteUser, "user");
   return <DeleteIcon isPending={isPending} onClick={() => handleDelete(id)} />;
 }
+
+import { deleteOfficialVisit } from "@/actions/visits";
+
+export function DeleteVisitButton({ id }: { id: string }) {
+  const { isPending, handleDelete } = useDelete(deleteOfficialVisit, "visit");
+  return <DeleteIcon isPending={isPending} onClick={() => handleDelete(id)} />;
+}
