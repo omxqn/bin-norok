@@ -3,9 +3,15 @@
 // Image upload for admin forms — saves into /public/uploads.
 
 import { writeFile, mkdir } from "fs/promises";
+import { randomUUID } from "crypto";
 import path from "path";
 import { auth } from "@/lib/auth";
-import { isAllowedImageType, sanitizeFilename, MAX_FILE_SIZE } from "@/lib/sanitize";
+import {
+  isAllowedImageType,
+  extensionForImageType,
+  sniffImageType,
+  MAX_FILE_SIZE,
+} from "@/lib/sanitize";
 
 export type UploadResult =
   | { success: true; path: string }
@@ -31,6 +37,17 @@ export async function uploadImage(formData: FormData): Promise<UploadResult> {
     return { success: false, error: "Image must be smaller than 5MB" };
   }
 
+  const buffer = Buffer.from(await file.arrayBuffer());
+
+  // file.type is just a header the client wrote — confirm the bytes agree
+  // before we store anything.
+  const actualType = sniffImageType(buffer);
+  const extension = actualType ? extensionForImageType(actualType) : null;
+
+  if (!actualType || !extension) {
+    return { success: false, error: "Only JPG, PNG, WebP and AVIF images are allowed" };
+  }
+
   // In production the uploads live on a persistent disk (UPLOADS_DIR),
   // served back through the /uploads/[...path] route. Locally they default
   // to public/uploads which Next serves statically.
@@ -38,9 +55,10 @@ export async function uploadImage(formData: FormData): Promise<UploadResult> {
     process.env.UPLOADS_DIR || path.join(process.cwd(), "public", "uploads");
   await mkdir(uploadsDir, { recursive: true });
 
-  const safeName = sanitizeFilename(file.name) || "image";
-  const fileName = `${Date.now()}-${safeName}`;
-  const buffer = Buffer.from(await file.arrayBuffer());
+  // The stored name is generated entirely server-side. Deriving it from
+  // file.name let an uploader choose the extension — an .html or .svg in
+  // public/uploads is served from our own origin and runs as script.
+  const fileName = `${randomUUID()}${extension}`;
   await writeFile(path.join(uploadsDir, fileName), buffer);
 
   return { success: true, path: `/uploads/${fileName}` };

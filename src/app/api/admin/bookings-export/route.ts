@@ -4,7 +4,17 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 function csvCell(value: unknown): string {
-  const s = value === null || value === undefined ? "" : String(value);
+  let s = value === null || value === undefined ? "" : String(value);
+
+  // Names and notes come from the public booking form. Excel and Sheets treat
+  // a cell starting with = + - @ (or tab/CR) as a formula, so an attacker
+  // could book under the name `=cmd|'/c calc'!A1` and get code execution on
+  // the admin's machine when they open the export. Prefix with a quote to
+  // force it to text; the leading ' is not displayed by spreadsheet apps.
+  if (/^[=+\-@\t\r]/.test(s)) {
+    s = `'${s}`;
+  }
+
   // Escape quotes and wrap in quotes if it contains a delimiter/newline
   const escaped = s.replace(/"/g, '""');
   return /[",\n]/.test(escaped) ? `"${escaped}"` : escaped;

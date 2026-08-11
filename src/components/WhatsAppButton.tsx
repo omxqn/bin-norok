@@ -2,9 +2,7 @@
 
 import { usePathname } from "next/navigation";
 
-const WHATSAPP_NUMBER = "96899339323";
-
-export function WhatsAppButton() {
+export function WhatsAppButton({ number }: { number: string }) {
   const pathname = usePathname();
 
   // Keep the admin dashboard clean
@@ -12,7 +10,7 @@ export function WhatsAppButton() {
 
   return (
     <a
-      href={`https://wa.me/${WHATSAPP_NUMBER}`}
+      href={`https://wa.me/${number}`}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="WhatsApp"

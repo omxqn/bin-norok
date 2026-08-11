@@ -4,7 +4,7 @@
 // Run: npx prisma db seed
 
 import { PrismaClient, Role, VisitType, BookingStatus, NewsEventType } from "@prisma/client";
-import * as bcrypt from "bcrypt";
+import * as bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -12,19 +12,32 @@ async function main() {
   console.log("🏛️  Seeding Bin Norouk Museum database...\n");
 
   // ─── 1. Create Super Admin ──────────────────────────
-  console.log("👤 Creating admin user...");
-  const hashedPassword = await bcrypt.hash("MuseumAdmin2024!", 12);
-  const admin = await prisma.user.upsert({
-    where: { email: "admin@binnorouk.museum" },
-    update: {},
-    create: {
-      name: "Museum Administrator",
-      email: "admin@binnorouk.museum",
-      password: hashedPassword,
-      role: Role.SUPER_ADMIN,
-    },
-  });
-  console.log(`   ✓ Admin created: ${admin.email}`);
+  // Credentials come from the environment. They used to be hardcoded here and
+  // published in DEPLOY.md, which made every deployment share one known
+  // super-admin password.
+  const adminEmail = process.env.SEED_ADMIN_EMAIL;
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD;
+
+  if (!adminEmail || !adminPassword) {
+    console.log(
+      "👤 Skipping admin user — set SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD to create one."
+    );
+  } else {
+    console.log("👤 Creating admin user...");
+    const hashedPassword = await bcrypt.hash(adminPassword, 12);
+    const admin = await prisma.user.upsert({
+      where: { email: adminEmail },
+      // Empty on purpose: never reset a password that has already been changed.
+      update: {},
+      create: {
+        name: "Museum Administrator",
+        email: adminEmail,
+        password: hashedPassword,
+        role: Role.SUPER_ADMIN,
+      },
+    });
+    console.log(`   ✓ Admin created: ${admin.email}`);
+  }
 
   // ─── 2. Create Museum Halls ─────────────────────────
   console.log("\n🏛️  Creating museum halls...");
@@ -453,10 +466,8 @@ async function main() {
   console.log(`   ✓ Created ${settings.length} site settings`);
 
   console.log("\n✅ Database seeding completed successfully!");
-  console.log("\n📋 Admin credentials (for local development only):");
-  console.log("   Email: admin@binnorouk.museum");
-  console.log("   Password: MuseumAdmin2024!");
-  console.log("\n⚠️  Change these credentials in production!");
+  // The password is deliberately not printed — seed output lands in the
+  // hosting platform's log stream, which is retained and widely readable.
 }
 
 main()

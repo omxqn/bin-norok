@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 export async function getOfficialVisits() {
@@ -20,6 +21,11 @@ export async function createOfficialVisit(data: {
   imagePath?: string | null;
   order?: number;
 }) {
+  const session = await auth();
+  if (!session?.user || (session.user.role !== "ADMIN" && session.user.role !== "SUPER_ADMIN" && session.user.role !== "EDITOR")) {
+    throw new Error("Unauthorized");
+  }
+
   const visit = await prisma.officialVisit.create({
     data: {
       nameAr: data.nameAr,
@@ -33,7 +39,17 @@ export async function createOfficialVisit(data: {
       order: data.order ?? 0,
     },
   });
-  
+
+  await prisma.auditLog.create({
+    data: {
+      userId: session.user.id,
+      action: "CREATE",
+      entity: "OfficialVisit",
+      entityId: visit.id,
+      details: `Created official visit: ${visit.nameEn}`,
+    },
+  });
+
   revalidatePath("/ar/visitors");
   revalidatePath("/en/visitors");
   revalidatePath("/ar/admin/visits");
@@ -56,6 +72,11 @@ export async function updateOfficialVisit(
     order?: number;
   }
 ) {
+  const session = await auth();
+  if (!session?.user || (session.user.role !== "ADMIN" && session.user.role !== "SUPER_ADMIN" && session.user.role !== "EDITOR")) {
+    throw new Error("Unauthorized");
+  }
+
   const visit = await prisma.officialVisit.update({
     where: { id },
     data: {
@@ -70,7 +91,17 @@ export async function updateOfficialVisit(
       order: data.order,
     },
   });
-  
+
+  await prisma.auditLog.create({
+    data: {
+      userId: session.user.id,
+      action: "UPDATE",
+      entity: "OfficialVisit",
+      entityId: visit.id,
+      details: `Updated official visit: ${visit.nameEn}`,
+    },
+  });
+
   revalidatePath("/ar/visitors");
   revalidatePath("/en/visitors");
   revalidatePath("/ar/admin/visits");
@@ -80,8 +111,23 @@ export async function updateOfficialVisit(
 }
 
 export async function deleteOfficialVisit(id: string) {
-  await prisma.officialVisit.delete({ where: { id } });
-  
+  const session = await auth();
+  if (!session?.user || (session.user.role !== "ADMIN" && session.user.role !== "SUPER_ADMIN")) {
+    throw new Error("Unauthorized");
+  }
+
+  const visit = await prisma.officialVisit.delete({ where: { id } });
+
+  await prisma.auditLog.create({
+    data: {
+      userId: session.user.id,
+      action: "DELETE",
+      entity: "OfficialVisit",
+      entityId: id,
+      details: `Deleted official visit: ${visit.nameEn}`,
+    },
+  });
+
   revalidatePath("/ar/visitors");
   revalidatePath("/en/visitors");
   revalidatePath("/ar/admin/visits");

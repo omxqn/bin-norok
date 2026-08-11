@@ -6,6 +6,7 @@
 // forms keep working without an email account.
 
 import { Resend } from "resend";
+import { escapeHtml } from "@/lib/sanitize";
 
 const apiKey = process.env.RESEND_API_KEY;
 const fromEmail = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
@@ -56,7 +57,7 @@ export function bookingConfirmationHtml(booking: {
         <h2 style="margin:0;">متحف بن نوروك — Bin Norouk Museum</h2>
       </div>
       <div style="padding:24px;">
-        <p style="font-size:16px;">مرحباً <b>${booking.fullName}</b>،</p>
+        <p style="font-size:16px;">مرحباً <b>${escapeHtml(booking.fullName)}</b>،</p>
         <p>تم استلام طلب حجزكم بنجاح وسنتواصل معكم للتأكيد.<br/>
         Your booking request has been received — we will contact you to confirm.</p>
         <table style="width:100%; border-collapse:collapse; margin:16px 0;">
@@ -87,13 +88,13 @@ export function bookingEmailHtml(booking: {
     <div style="font-family: sans-serif; max-width: 560px;">
       <h2 style="color:#6e2a22;">حجز جديد — New Booking Request</h2>
       <table style="width:100%; border-collapse: collapse;">
-        <tr><td style="padding:6px 0; color:#666;">الاسم / Name</td><td style="font-weight:bold;">${booking.fullName}</td></tr>
-        <tr><td style="padding:6px 0; color:#666;">البريد / Email</td><td>${booking.email}</td></tr>
-        <tr><td style="padding:6px 0; color:#666;">الهاتف / Phone</td><td>${booking.phone}</td></tr>
-        <tr><td style="padding:6px 0; color:#666;">النوع / Type</td><td>${booking.visitType}</td></tr>
-        <tr><td style="padding:6px 0; color:#666;">التاريخ / Date</td><td>${booking.preferredDate.toISOString().split("T")[0]} — ${booking.preferredTime}</td></tr>
+        <tr><td style="padding:6px 0; color:#666;">الاسم / Name</td><td style="font-weight:bold;">${escapeHtml(booking.fullName)}</td></tr>
+        <tr><td style="padding:6px 0; color:#666;">البريد / Email</td><td>${escapeHtml(booking.email)}</td></tr>
+        <tr><td style="padding:6px 0; color:#666;">الهاتف / Phone</td><td>${escapeHtml(booking.phone)}</td></tr>
+        <tr><td style="padding:6px 0; color:#666;">النوع / Type</td><td>${escapeHtml(booking.visitType)}</td></tr>
+        <tr><td style="padding:6px 0; color:#666;">التاريخ / Date</td><td>${booking.preferredDate.toISOString().split("T")[0]} — ${escapeHtml(booking.preferredTime)}</td></tr>
         <tr><td style="padding:6px 0; color:#666;">الزوار / Visitors</td><td>${booking.numberOfVisitors}</td></tr>
-        ${booking.notes ? `<tr><td style="padding:6px 0; color:#666;">ملاحظات / Notes</td><td>${booking.notes}</td></tr>` : ""}
+        ${booking.notes ? `<tr><td style="padding:6px 0; color:#666;">ملاحظات / Notes</td><td>${escapeHtml(booking.notes)}</td></tr>` : ""}
       </table>
       <p style="color:#999; font-size:12px; margin-top:16px;">Bin Norouk Museum — automated notification</p>
     </div>`;
@@ -111,13 +112,13 @@ export function messageEmailHtml(message: {
     <div style="font-family: sans-serif; max-width: 560px;">
       <h2 style="color:#6e2a22;">رسالة جديدة — New Contact Message</h2>
       <table style="width:100%; border-collapse: collapse;">
-        <tr><td style="padding:6px 0; color:#666;">الاسم / Name</td><td style="font-weight:bold;">${message.name}</td></tr>
-        <tr><td style="padding:6px 0; color:#666;">البريد / Email</td><td>${message.email}</td></tr>
-        ${message.phone ? `<tr><td style="padding:6px 0; color:#666;">الهاتف / Phone</td><td>${message.phone}</td></tr>` : ""}
-        <tr><td style="padding:6px 0; color:#666;">التصنيف / Category</td><td>${message.category}</td></tr>
-        <tr><td style="padding:6px 0; color:#666;">الموضوع / Subject</td><td style="font-weight:bold;">${message.subject}</td></tr>
+        <tr><td style="padding:6px 0; color:#666;">الاسم / Name</td><td style="font-weight:bold;">${escapeHtml(message.name)}</td></tr>
+        <tr><td style="padding:6px 0; color:#666;">البريد / Email</td><td>${escapeHtml(message.email)}</td></tr>
+        ${message.phone ? `<tr><td style="padding:6px 0; color:#666;">الهاتف / Phone</td><td>${escapeHtml(message.phone)}</td></tr>` : ""}
+        <tr><td style="padding:6px 0; color:#666;">التصنيف / Category</td><td>${escapeHtml(message.category)}</td></tr>
+        <tr><td style="padding:6px 0; color:#666;">الموضوع / Subject</td><td style="font-weight:bold;">${escapeHtml(message.subject)}</td></tr>
       </table>
-      <div style="background:#f8f8f8; border-radius:8px; padding:12px; margin-top:12px; white-space:pre-line;">${message.message}</div>
+      <div style="background:#f8f8f8; border-radius:8px; padding:12px; margin-top:12px; white-space:pre-line;">${escapeHtml(message.message)}</div>
       <p style="color:#999; font-size:12px; margin-top:16px;">Bin Norouk Museum — automated notification</p>
     </div>`;
 }

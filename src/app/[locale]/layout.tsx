@@ -1,4 +1,5 @@
 import { NextIntlClientProvider } from "next-intl";
+import { Analytics } from "@vercel/analytics/next";
 import { Toaster } from "sonner";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -7,6 +8,7 @@ import { Amiri, Cormorant_Garamond, Outfit, Noto_Sans_Arabic, IBM_Plex_Sans_Arab
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { getSiteContact } from "@/lib/site-settings";
 import "../globals.css";
 
 const amiri = Amiri({
@@ -72,6 +74,9 @@ export default async function LocaleLayout({
   const messages = await getMessages();
   const dir = localeDirection[locale as Locale];
 
+  // Cached (1h, tag-invalidated on save) so this adds no per-request query.
+  const contact = await getSiteContact();
+
   return (
     <html lang={locale} dir={dir} className={`${amiri.variable} ${cormorant.variable} ${outfit.variable} ${notoArabic.variable} ${plexArabic.variable}`}>
       <body>
@@ -80,10 +85,11 @@ export default async function LocaleLayout({
           <main className="min-h-screen bg-background text-foreground">
             {children}
           </main>
-          <Footer />
-          <WhatsAppButton />
+          <Footer contact={contact} />
+          <WhatsAppButton number={contact.whatsapp} />
           <Toaster richColors position={dir === "rtl" ? "top-left" : "top-right"} />
         </NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   );

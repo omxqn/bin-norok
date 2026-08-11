@@ -5,9 +5,17 @@ import { auth } from "@/lib/auth";
 import { messageAdminUpdateSchema, MessageAdminUpdateFormValues } from "@/schemas/message";
 import { revalidatePath } from "next/cache";
 
+// Contact messages carry sender names, emails and phone numbers. Match the
+// ADMIN-only guard already used by the mutating actions below.
+function requireMessageAccess(role: string | undefined) {
+  if (!role || !["ADMIN", "SUPER_ADMIN"].includes(role)) {
+    throw new Error("Unauthorized");
+  }
+}
+
 export async function getMessages() {
   const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  requireMessageAccess((session?.user as { role?: string } | undefined)?.role);
 
   return await prisma.contactMessage.findMany({
     orderBy: { createdAt: "desc" },
@@ -16,7 +24,7 @@ export async function getMessages() {
 
 export async function getMessage(id: string) {
   const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  requireMessageAccess((session?.user as { role?: string } | undefined)?.role);
 
   return await prisma.contactMessage.findUnique({
     where: { id },

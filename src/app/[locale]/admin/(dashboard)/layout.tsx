@@ -13,7 +13,17 @@ export default async function AdminLayout({
   const { locale } = await params;
   const session = await auth();
 
-  if (!session) {
+  if (!session?.user) {
+    redirect(`/${locale}/admin/login`);
+  }
+
+  // A bare `if (!session)` let any authenticated account — including a
+  // default-role EDITOR — reach every dashboard page. Note this layout is a
+  // convenience gate only: Partial Rendering means it does not re-run on
+  // client navigation, so each page and server action still checks for itself.
+  const role = (session.user as { role?: string }).role;
+
+  if (!role || !["EDITOR", "ADMIN", "SUPER_ADMIN"].includes(role)) {
     redirect(`/${locale}/admin/login`);
   }
 

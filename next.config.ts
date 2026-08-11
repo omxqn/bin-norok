@@ -3,6 +3,28 @@ import createNextIntlPlugin from 'next-intl/plugin';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
+// Content-Security-Policy. Shipped in Report-Only mode: violations are
+// reported to the browser console but nothing is blocked, so this cannot
+// break the live site. Verify the console is clean, then rename the header
+// below to 'Content-Security-Policy' to enforce it.
+//
+// 'unsafe-inline' on style-src is required by Tailwind v4 and next/font.
+// Tightening script-src further needs a per-request nonce issued from
+// src/proxy.ts — see next/dist/docs/01-app/02-guides/content-security-policy.md
+const contentSecurityPolicy = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' blob: data: https://images.unsplash.com",
+  "font-src 'self' data:",
+  "connect-src 'self'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+  'upgrade-insecure-requests',
+].join('; ');
+
 // Security headers applied to every response
 const securityHeaders = [
   // Prevent the site from being embedded in iframes (clickjacking)
@@ -13,8 +35,13 @@ const securityHeaders = [
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
   // Disable powerful browser features we don't use
   { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), payment=()' },
-  // Basic XSS protection for older browsers
-  { key: 'X-XSS-Protection', value: '1; mode=block' },
+  // Force HTTPS for two years, including subdomains. Only add `preload` once
+  // every subdomain is confirmed HTTPS-ready — it is hard to undo.
+  { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains' },
+  // Disable the legacy XSS Auditor. The header is gone from modern browsers
+  // and its `1; mode=block` mode was itself exploitable in older ones.
+  { key: 'X-XSS-Protection', value: '0' },
+  { key: 'Content-Security-Policy-Report-Only', value: contentSecurityPolicy },
 ];
 
 const nextConfig: NextConfig = {

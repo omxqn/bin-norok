@@ -4,7 +4,11 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { userSchema, UserFormValues } from "@/schemas/user";
 import { revalidatePath } from "next/cache";
-import bcrypt from "bcrypt";
+// bcryptjs, not the native `bcrypt`: the native module needs a matching
+// prebuilt binary and breaks on serverless/musl hosts. Hash formats are
+// interchangeable between the two.
+import bcrypt from "bcryptjs";
+import { HASH_ROUNDS } from "@/lib/auth";
 
 export async function getUsers() {
   const session = await auth();
@@ -53,7 +57,7 @@ export async function createUser(data: UserFormValues) {
     throw new Error("Password is required for new users");
   }
 
-  const hashedPassword = await bcrypt.hash(validated.password, 10);
+  const hashedPassword = await bcrypt.hash(validated.password, HASH_ROUNDS);
 
   const user = await prisma.user.create({
     data: {
@@ -94,7 +98,7 @@ export async function updateUser(id: string, data: UserFormValues) {
   };
 
   if (validated.password) {
-    updateData.password = await bcrypt.hash(validated.password, 10);
+    updateData.password = await bcrypt.hash(validated.password, HASH_ROUNDS);
   }
 
   const user = await prisma.user.update({

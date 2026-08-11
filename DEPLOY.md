@@ -47,11 +47,13 @@ git push -u origin main
 DATABASE_URL=file:/data/prod.db
 UPLOADS_DIR=/data/uploads
 NEXTAUTH_URL=https://yourdomain.com
-NEXTAUTH_SECRET=xWv1E0ZNS/gHWt6B2hnGPTx7KoQT5I+0UBK8Z14w4LI=
-AUTH_SECRET=xWv1E0ZNS/gHWt6B2hnGPTx7KoQT5I+0UBK8Z14w4LI=
+NEXTAUTH_SECRET=<ولّد مفتاحك الخاص>
+AUTH_SECRET=<نفس قيمة NEXTAUTH_SECRET>
 AUTH_TRUST_HOST=true
 NEXT_PUBLIC_APP_URL=https://yourdomain.com
 NEXT_PUBLIC_DEFAULT_LOCALE=ar
+SEED_ADMIN_EMAIL=<بريد الأدمن>
+SEED_ADMIN_PASSWORD=<كلمة مرور قوية وفريدة>
 ```
 
 اختياري (لتفعيل إشعارات البريد عبر Resend):
@@ -63,7 +65,8 @@ ADMIN_NOTIFY_EMAIL=your@email.com
 ```
 
 > `PORT` تضبطه Railway تلقائياً — لا تضِفه.
-> المفتاح أعلاه وُلِّد خصيصاً لك؛ يمكنك توليد غيره بـ `openssl rand -base64 32`.
+> ولّد `NEXTAUTH_SECRET` بنفسك عبر `openssl rand -base64 32`، ولا تنسخ أي مفتاح
+> من ملف مثال أو من هذا الدليل — من يملك هذا المفتاح يستطيع تزوير جلسة أدمن كاملة.
 
 بعد حفظ المتغيّرات، Railway سيعيد النشر. سكربت الإقلاع سيقوم تلقائياً بـ:
 `prisma db push` (إنشاء الجداول) ثم `seed` (المحتوى الأساسي + حساب الأدمن).
@@ -76,8 +79,9 @@ Railway يمنحك رابطاً مؤقتاً مثل `https://zal-museum-producti
 افتحه وتأكّد أن الصفحات تعمل، ثم جرّب لوحة الإدارة:
 
 - الرابط: `.../ar/admin/login`
-- البريد: `admin@binnorouk.museum`
-- كلمة المرور: `MuseumAdmin2024!`  ← **غيّرها فوراً بعد أول دخول**
+- البريد وكلمة المرور: القيم التي ضبطتها في `SEED_ADMIN_EMAIL` و `SEED_ADMIN_PASSWORD`
+
+> لا تضع كلمة مرور حقيقية في هذا الملف — فهو يُرفع إلى GitHub.
 
 ---
 

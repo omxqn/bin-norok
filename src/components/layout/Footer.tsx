@@ -4,8 +4,9 @@ import Link from "next/link";
 import { useLocale } from "next-intl";
 import { usePathname } from "next/navigation";
 import { Icon } from "@/components/Icon";
+import type { SiteContact } from "@/lib/site-settings";
 
-export function Footer() {
+export function Footer({ contact }: { contact: SiteContact }) {
   const locale = useLocale();
   const pathname = usePathname();
 
@@ -51,24 +52,24 @@ export function Footer() {
 
         {/* Contact Info & Socials */}
         <div className="flex flex-wrap justify-center items-center gap-4 text-[#B8A892] text-xs md:text-sm" dir="ltr">
-          <a href="tel:+96899339323" className="flex items-center gap-1.5 hover:text-gold-2 transition-colors">
+          <a href={`tel:${contact.phoneHref}`} className="flex items-center gap-1.5 hover:text-gold-2 transition-colors">
             <Icon name="phone" size={14} className="text-gold-dark" />
-            +968 99339323
+            {contact.phone}
           </a>
           <span className="hidden md:inline text-gold/30">·</span>
-          <a href="mailto:zak.norocinvest@gmail.com" className="flex items-center gap-1.5 hover:text-gold-2 transition-colors">
+          <a href={`mailto:${contact.email}`} className="flex items-center gap-1.5 hover:text-gold-2 transition-colors">
             <Icon name="email" size={14} className="text-gold-dark" />
-            zak.norocinvest@gmail.com
+            {contact.email}
           </a>
           <span className="hidden md:inline text-gold/30">·</span>
           <div className="flex gap-3">
-            <a href="#" aria-label="Instagram" className="hover:text-gold-2 transition-colors">
+            <a href={contact.instagram} aria-label="Instagram" className="hover:text-gold-2 transition-colors">
               <Icon name="instagram" size={15} />
             </a>
             <a href="#" aria-label="X" className="hover:text-gold-2 transition-colors">
               <Icon name="x" size={15} />
             </a>
-            <a href="https://wa.me/96899339323" aria-label="WhatsApp" className="hover:text-gold-2 transition-colors">
+            <a href={`https://wa.me/${contact.whatsapp}`} aria-label="WhatsApp" className="hover:text-gold-2 transition-colors">
               <Icon name="whatsapp" size={15} />
             </a>
           </div>

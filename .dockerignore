@@ -9,5 +9,6 @@ prisma/dev.db
 npm-debug.log
 README.md
 DEPLOY.md
+create-admin.js
 .vscode
 .idea

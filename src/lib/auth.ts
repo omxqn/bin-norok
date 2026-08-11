@@ -4,6 +4,16 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
 
+// Work factor for every password hash in the app. Keep in sync with
+// src/actions/users.ts and prisma/seed.ts.
+export const HASH_ROUNDS = 12;
+
+// A real hash of the same cost, compared against when the email is unknown so
+// that "no such user" takes the same time as "wrong password". A malformed
+// string would be rejected by bcrypt without doing any key-schedule work,
+// which would *create* the enumeration oracle instead of closing it.
+const DUMMY_HASH = bcrypt.hashSync("dummy-password-for-timing", HASH_ROUNDS);
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     CredentialsProvider({
@@ -33,9 +43,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         });
 
         if (!user) {
-          // Constant-time-ish: hash a dummy password so "user not found"
-          // takes as long as a wrong password (prevents user enumeration)
-          await bcrypt.compare(String(credentials.password), "$2a$12$invalidsaltinvalidsaltinvalidsaltinvalid12");
+          // Burn the same time a real comparison costs, so response latency
+          // does not reveal whether the email exists.
+          await bcrypt.compare(String(credentials.password), DUMMY_HASH);
           return null;
         }
 
@@ -59,6 +69,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     async jwt({ token, user }) {
+      // Role is carried in the JWT and read from there on every request — no
+      // database round-trip per request. Tradeoff: a demoted or deleted
+      // account keeps its old role until the token expires, so maxAge below
+      // is kept short to bound that window.
       if (user) {
         token.role = user.role;
         token.id = user.id ?? "";
@@ -66,9 +80,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return token;
     },
     async session({ session, token }) {
+      // Session.user is augmented with id/role in src/types/next-auth.d.ts,
+      // so these assign directly — no `any` cast needed.
       if (session.user) {
-        (session.user as any).role = token.role;
-        (session.user as any).id = token.id;
+        session.user.role = token.role;
+        session.user.id = token.id;
       }
       return session;
     }
@@ -78,7 +94,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   session: {
     strategy: "jwt",
-    maxAge: 8 * 60 * 60, // 8-hour sessions
+    // Role lives in the token, so this doubles as the revocation window:
+    // a demoted admin keeps their old role until the token expires.
+    maxAge: 2 * 60 * 60, // 2-hour sessions
+    updateAge: 30 * 60,
   },
   secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET,
 });

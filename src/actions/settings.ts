@@ -3,7 +3,11 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { siteSettingSchema, SiteSettingFormValues } from "@/schemas/setting";
-import { revalidatePath } from "next/cache";
+import { SITE_SETTINGS_TAG } from "@/lib/site-settings";
+// updateTag (not revalidateTag) for read-your-own-writes: it expires the entry
+// immediately so the admin sees their change on the public site right away,
+// instead of the next visitor getting stale content.
+import { revalidatePath, updateTag } from "next/cache";
 
 export async function getSettings() {
   return await prisma.siteSetting.findMany({
@@ -34,6 +38,9 @@ export async function updateSetting(id: string, data: SiteSettingFormValues) {
     },
   });
 
+  // Drop the cached public contact details so the change shows on the live
+  // site immediately instead of waiting out the 1-hour revalidate window.
+  updateTag(SITE_SETTINGS_TAG);
   revalidatePath("/admin/settings");
   return setting;
 }
@@ -60,6 +67,7 @@ export async function createSetting(data: SiteSettingFormValues) {
     },
   });
 
+  updateTag(SITE_SETTINGS_TAG);
   revalidatePath("/admin/settings");
   return setting;
 }
