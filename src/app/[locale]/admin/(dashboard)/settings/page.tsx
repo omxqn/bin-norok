@@ -1,5 +1,7 @@
 import { getSettings } from "@/actions/settings";
 import { SettingEditor } from "@/components/admin/SettingEditor";
+import { PageToggles } from "@/components/admin/PageToggles";
+import { getDisabledPages } from "@/lib/page-toggles";
 
 export default async function AdminSettingsPage({
   params,
@@ -8,7 +10,13 @@ export default async function AdminSettingsPage({
 }) {
   const { locale } = await params;
   const isAr = locale === "ar";
-  const settings = await getSettings();
+  const [allSettings, disabledPages] = await Promise.all([
+    getSettings(),
+    getDisabledPages(),
+  ]);
+
+  // page.* keys are driven by the toggles below, not the key/value editor.
+  const settings = allSettings.filter((s) => !s.key.startsWith("page."));
 
   return (
     <div className="space-y-6">
@@ -32,7 +40,25 @@ export default async function AdminSettingsPage({
         </a>
       </div>
 
-      <div className="heritage-card divide-y divide-gray-100">
+      <section className="space-y-3">
+        <div>
+          <h2 className="text-lg font-black text-foreground">
+            {isAr ? "الصفحات العامة" : "Public Pages"}
+          </h2>
+          <p className="text-sm text-gray-500">
+            {isAr
+              ? "أوقف أي صفحة مؤقتاً. إيقاف صفحة الزيارة يمنع استقبال أي حجز جديد."
+              : "Temporarily take a page offline. Disabling the Visit page also stops any new bookings from being submitted."}
+          </p>
+        </div>
+        <PageToggles disabledSlugs={disabledPages} isAr={isAr} />
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-lg font-black text-foreground">
+          {isAr ? "القيم العامة" : "General Values"}
+        </h2>
+        <div className="heritage-card divide-y divide-gray-100">
         {settings.map((setting) => (
           <div key={setting.id} className="px-5 py-4">
             <SettingEditor
@@ -48,7 +74,8 @@ export default async function AdminSettingsPage({
             {isAr ? "لا توجد إعدادات" : "No settings yet"}
           </p>
         )}
-      </div>
+        </div>
+      </section>
     </div>
   );
 }

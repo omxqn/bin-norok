@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { sanitizeString } from "@/lib/sanitize";
+import { isPageEnabled } from "@/lib/page-toggles";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
@@ -22,6 +23,12 @@ export async function getApprovedGuestbookEntries() {
 }
 
 export async function submitGuestbookEntry(formData: FormData): Promise<GuestbookResult> {
+  // The guestbook lives on the visitors page — disabling that page must also
+  // stop direct submissions to this action.
+  if (!(await isPageEnabled("visitors"))) {
+    return { success: false, error: "disabled" };
+  }
+
   const headerList = await headers();
   const ip = headerList.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
   const rate = checkRateLimit(ip, "contact");

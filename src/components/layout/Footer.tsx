@@ -6,25 +6,32 @@ import { usePathname } from "next/navigation";
 import { Icon } from "@/components/Icon";
 import type { SiteContact } from "@/lib/site-settings";
 
-export function Footer({ contact }: { contact: SiteContact }) {
+export function Footer({
+  contact,
+  disabledPages = [],
+}: {
+  contact: SiteContact;
+  disabledPages?: string[];
+}) {
   const locale = useLocale();
   const pathname = usePathname();
 
   // Admin has its own chrome — hide the public footer there
   if (pathname?.includes("/admin")) return null;
 
+  // `slug` maps to the admin page toggles; links for disabled pages are hidden.
   const allLinks = [
-    { name: locale === "ar" ? "الرئيسية" : "Home", href: `/${locale}` },
-    { name: locale === "ar" ? "عن المتحف" : "About", href: `/${locale}/about` },
-    { name: locale === "ar" ? "قاعات العرض" : "Halls", href: `/${locale}/halls` },
-    { name: locale === "ar" ? "المقتنيات" : "Collections", href: `/${locale}/collections` },
-    { name: locale === "ar" ? "رحلة التراث" : "Heritage", href: `/${locale}/heritage` },
-    { name: locale === "ar" ? "صحار" : "Sohar", href: `/${locale}/sohar` },
-    { name: locale === "ar" ? "الجولة الافتراضية" : "Virtual Tour", href: `/${locale}/virtual-tour` },
-    { name: locale === "ar" ? "الزوّار والأخبار" : "Visitors", href: `/${locale}/visitors` },
-    { name: locale === "ar" ? "خطط لزيارتك" : "Visit", href: `/${locale}/visit` },
-    { name: locale === "ar" ? "التواصل" : "Contact", href: `/${locale}/contact` },
-  ];
+    { name: locale === "ar" ? "الرئيسية" : "Home", href: `/${locale}`, slug: null },
+    { name: locale === "ar" ? "عن المتحف" : "About", href: `/${locale}/about`, slug: "about" },
+    { name: locale === "ar" ? "قاعات العرض" : "Halls", href: `/${locale}/halls`, slug: "halls" },
+    { name: locale === "ar" ? "المقتنيات" : "Collections", href: `/${locale}/collections`, slug: "collections" },
+    { name: locale === "ar" ? "رحلة التراث" : "Heritage", href: `/${locale}/heritage`, slug: "heritage" },
+    { name: locale === "ar" ? "صحار" : "Sohar", href: `/${locale}/sohar`, slug: "sohar" },
+    { name: locale === "ar" ? "الجولة الافتراضية" : "Virtual Tour", href: `/${locale}/virtual-tour`, slug: "virtual-tour" },
+    { name: locale === "ar" ? "الزوّار والأخبار" : "Visitors", href: `/${locale}/visitors`, slug: "visitors" },
+    { name: locale === "ar" ? "خطط لزيارتك" : "Visit", href: `/${locale}/visit`, slug: "visit" },
+    { name: locale === "ar" ? "التواصل" : "Contact", href: `/${locale}/contact`, slug: "contact" },
+  ].filter((link) => !link.slug || !disabledPages.includes(link.slug));
 
   return (
     <footer className="bg-heritage-header text-[#EDE6D8] pt-10 pb-6 border-t border-gold/20 mt-auto">

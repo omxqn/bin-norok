@@ -9,6 +9,7 @@ import { publicMessageSchema } from "@/schemas/message";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { sanitizeString, sanitizeEmail, sanitizePhone } from "@/lib/sanitize";
 import { notifyAdmin, sendVisitorEmail, bookingEmailHtml, messageEmailHtml, bookingConfirmationHtml } from "@/lib/email";
+import { isPageEnabled } from "@/lib/page-toggles";
 import { headers } from "next/headers";
 
 async function getClientIp(): Promise<string> {
@@ -21,6 +22,12 @@ export type PublicActionResult =
   | { success: false; error: string };
 
 export async function createBooking(formData: FormData): Promise<PublicActionResult> {
+  // Checked here, not just on the page: a server action is a public POST
+  // endpoint, so hiding the form is not enough to stop a booking.
+  if (!(await isPageEnabled("visit"))) {
+    return { success: false, error: "disabled" };
+  }
+
   const ip = await getClientIp();
   const rate = checkRateLimit(ip, "booking");
   if (!rate.success) {
@@ -64,6 +71,10 @@ export async function createBooking(formData: FormData): Promise<PublicActionRes
 }
 
 export async function submitContactMessage(formData: FormData): Promise<PublicActionResult> {
+  if (!(await isPageEnabled("contact"))) {
+    return { success: false, error: "disabled" };
+  }
+
   const ip = await getClientIp();
   const rate = checkRateLimit(ip, "contact");
   if (!rate.success) {

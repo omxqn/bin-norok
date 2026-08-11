@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Menu, X, ArrowLeft, ArrowRight } from "lucide-react";
 
-export function Navbar() {
+export function Navbar({ disabledPages = [] }: { disabledPages?: string[] }) {
   const t = useTranslations("Navigation");
   const locale = useLocale();
   const isAr = locale === "ar";
@@ -35,16 +35,20 @@ export function Navbar() {
 
   if (isAdminRoute) return null;
 
+  // `slug` maps to the admin page toggles; links for disabled pages are hidden.
   const navLinks = [
-    { name: t("home"), href: `/${locale}` },
-    { name: t("about"), href: `/${locale}/about` },
-    { name: t("halls"), href: `/${locale}/halls` },
-    { name: isAr ? "المقتنيات" : "Collections", href: `/${locale}/collections` },
-    { name: isAr ? "صحار" : "Sohar", href: `/${locale}/sohar` },
-    { name: isAr ? "الجولة الافتراضية" : "Virtual Tour", href: `/${locale}/virtual-tour` },
-    { name: isAr ? "الزوّار والأخبار" : "Visitors", href: `/${locale}/visitors` },
-    { name: t("contact"), href: `/${locale}/contact` },
-  ];
+    { name: t("home"), href: `/${locale}`, slug: null },
+    { name: t("about"), href: `/${locale}/about`, slug: "about" },
+    { name: t("halls"), href: `/${locale}/halls`, slug: "halls" },
+    { name: isAr ? "المقتنيات" : "Collections", href: `/${locale}/collections`, slug: "collections" },
+    { name: isAr ? "صحار" : "Sohar", href: `/${locale}/sohar`, slug: "sohar" },
+    { name: isAr ? "الجولة الافتراضية" : "Virtual Tour", href: `/${locale}/virtual-tour`, slug: "virtual-tour" },
+    { name: isAr ? "الزوّار والأخبار" : "Visitors", href: `/${locale}/visitors`, slug: "visitors" },
+    { name: t("contact"), href: `/${locale}/contact`, slug: "contact" },
+    { name: isAr ? "لوحة الإدارة" : "Admin Panel", href: `/${locale}/admin/login`, slug: null },
+  ].filter((link) => !link.slug || !disabledPages.includes(link.slug));
+
+  const isVisitEnabled = !disabledPages.includes("visit");
 
   const solid = isScrolled || isMobileMenuOpen;
   const Arrow = isAr ? ArrowLeft : ArrowRight;
@@ -106,13 +110,15 @@ export function Navbar() {
           {/* Right cluster: language + prominent Plan-Visit CTA */}
           <div className="flex items-center gap-2.5 md:gap-3 shrink-0">
             <LanguageSwitcher />
-            <Link
-              href={`/${locale}/visit`}
-              className="hidden sm:inline-flex items-center gap-2 bg-gold hover:bg-gold-2 text-[#1a1510] font-bold text-[12px] tracking-[0.06em] uppercase px-4 py-2.5 rounded-md transition-all hover:-translate-y-0.5 shadow-[0_4px_16px_rgba(176,141,63,0.35)]"
-            >
-              {t("visit")}
-              <Arrow className="w-3.5 h-3.5" />
-            </Link>
+            {isVisitEnabled && (
+              <Link
+                href={`/${locale}/visit`}
+                className="hidden sm:inline-flex items-center gap-2 bg-gold hover:bg-gold-2 text-[#1a1510] font-bold text-[12px] tracking-[0.06em] uppercase px-4 py-2.5 rounded-md transition-all hover:-translate-y-0.5 shadow-[0_4px_16px_rgba(176,141,63,0.35)]"
+              >
+                {t("visit")}
+                <Arrow className="w-3.5 h-3.5" />
+              </Link>
+            )}
           </div>
         </div>
       </motion.header>
@@ -166,16 +172,18 @@ export function Navbar() {
               })}
             </nav>
 
-            <div className="shrink-0 p-6 border-t border-gold/15">
-              <Link
-                href={`/${locale}/visit`}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center justify-center gap-2 w-full bg-gold hover:bg-gold-2 text-[#1a1510] font-bold text-sm tracking-[0.06em] uppercase px-6 py-4 rounded-lg transition-colors shadow-lg"
-              >
-                {t("visit")}
-                <Arrow className="w-4 h-4" />
-              </Link>
-            </div>
+            {isVisitEnabled && (
+              <div className="shrink-0 p-6 border-t border-gold/15">
+                <Link
+                  href={`/${locale}/visit`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center justify-center gap-2 w-full bg-gold hover:bg-gold-2 text-[#1a1510] font-bold text-sm tracking-[0.06em] uppercase px-6 py-4 rounded-lg transition-colors shadow-lg"
+                >
+                  {t("visit")}
+                  <Arrow className="w-4 h-4" />
+                </Link>
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

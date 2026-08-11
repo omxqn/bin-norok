@@ -94,6 +94,12 @@ export function BookingWizard() {
         setDone(true);
       } else if (result.error === "rateLimit") {
         toast.error(isAr ? "طلبات كثيرة، حاول لاحقاً." : "Too many requests, try later.");
+      } else if (result.error === "disabled") {
+        toast.error(
+          isAr
+            ? "الحجز متوقف مؤقتاً من قبل إدارة المتحف."
+            : "Bookings are temporarily closed by the museum."
+        );
       } else {
         toast.error(isAr ? "تحقق من البيانات وحاول مجدداً." : "Please check your details and try again.");
       }

@@ -9,6 +9,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { getSiteContact } from "@/lib/site-settings";
+import { getDisabledPages } from "@/lib/page-toggles";
 import "../globals.css";
 
 const amiri = Amiri({
@@ -74,18 +75,21 @@ export default async function LocaleLayout({
   const messages = await getMessages();
   const dir = localeDirection[locale as Locale];
 
-  // Cached (1h, tag-invalidated on save) so this adds no per-request query.
-  const contact = await getSiteContact();
+  // Both cached (1h, tag-invalidated on save) so they add no per-request query.
+  const [contact, disabledPages] = await Promise.all([
+    getSiteContact(),
+    getDisabledPages(),
+  ]);
 
   return (
     <html lang={locale} dir={dir} className={`${amiri.variable} ${cormorant.variable} ${outfit.variable} ${notoArabic.variable} ${plexArabic.variable}`}>
       <body>
         <NextIntlClientProvider messages={messages}>
-          <Navbar />
+          <Navbar disabledPages={disabledPages} />
           <main className="min-h-screen bg-background text-foreground">
             {children}
           </main>
-          <Footer contact={contact} />
+          <Footer contact={contact} disabledPages={disabledPages} />
           <WhatsAppButton number={contact.whatsapp} />
           <Toaster richColors position={dir === "rtl" ? "top-left" : "top-right"} />
         </NextIntlClientProvider>
