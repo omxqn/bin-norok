@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import Image from "next/image";
+import { SafeImage } from "@/components/SafeImage";
 import { Search } from "lucide-react";
 import { ImagePlaceholder } from "@/components/ImagePlaceholder";
 
@@ -108,10 +108,9 @@ export function CollectionsGrid({ locale, categories, items, allLabel }: Collect
                 <div className="heritage-card overflow-hidden h-full !p-0">
                   <div className="relative h-60 overflow-hidden">
                     {item.imagePath && !item.imagePath.includes("/placeholders/") ? (
-                      <Image
+                      <SafeImage
                         src={item.imagePath}
                         alt={isAr ? item.titleAr : item.titleEn}
-                        fill
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
                       />

@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { hallSchema, HallFormValues } from "@/schemas/hall";
+import { isStorableImagePath } from "@/lib/image-src";
 import { revalidatePath } from "next/cache";
 
 // Reads here include unpublished halls, and a "use server" export is a public
@@ -94,10 +95,11 @@ export async function setHallImages(hallId: string, paths: string[]) {
     throw new Error("Unauthorized");
   }
 
-  // Replace the gallery atomically: only local upload/image paths are accepted
-  const safePaths = paths
-    .filter((p) => typeof p === "string" && (p.startsWith("/uploads/") || p.startsWith("/images/")))
-    .slice(0, 20);
+  // Replace the gallery atomically. Only sources we recognise are accepted —
+  // local upload/image paths, or a Vercel Blob URL when uploads go there. The
+  // previous check allowed local paths only, which silently dropped every
+  // image uploaded to blob storage.
+  const safePaths = paths.filter(isStorableImagePath).slice(0, 20);
 
   await prisma.$transaction([
     prisma.hallImage.deleteMany({ where: { hallId } }),

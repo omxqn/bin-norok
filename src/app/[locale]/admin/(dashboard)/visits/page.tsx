@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Plus, Pencil } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getLocalized } from "@/lib/utils";
+import { SafeImage } from "@/components/SafeImage";
 import { DeleteVisitButton } from "@/components/admin/DeleteButtons";
 
 export default async function AdminVisitsPage({
@@ -40,7 +41,9 @@ export default async function AdminVisitsPage({
           <div key={visit.id} className="px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="min-w-0 flex items-center gap-4">
               {visit.imagePath ? (
-                <img src={visit.imagePath} alt="" className="w-16 h-16 object-cover rounded-lg shrink-0 border" />
+                <div className="relative w-16 h-16 rounded-lg shrink-0 border overflow-hidden bg-gray-100">
+                  <SafeImage src={visit.imagePath} alt={getLocalized(visit, "name", locale)} sizes="64px" />
+                </div>
               ) : (
                 <div className="w-16 h-16 bg-gray-100 rounded-lg shrink-0 border flex items-center justify-center text-gray-400 text-xs">
                   {isAr ? "بدون صورة" : "No image"}

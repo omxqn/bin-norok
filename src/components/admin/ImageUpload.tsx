@@ -1,11 +1,11 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
-import Image from "next/image";
 import { toast } from "sonner";
 import { ImagePlus, Loader2, X } from "lucide-react";
 import { uploadImage } from "@/actions/upload";
 import { MAX_FILE_SIZE } from "@/lib/sanitize";
+import { SafeImage } from "@/components/SafeImage";
 
 export function ImageUpload({
   name = "imagePath",
@@ -82,7 +82,9 @@ export function ImageUpload({
       {imagePath ? (
         <div className="relative w-full max-w-xs">
           <div className="relative h-40 w-full rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
-            <Image src={imagePath} alt="Preview" fill sizes="320px" className="object-cover" />
+            {/* SafeImage, not next/image: a src next/image rejects throws
+                during render and takes the whole edit page down. */}
+            <SafeImage src={imagePath} alt="Preview" sizes="320px" />
           </div>
           <div className="flex gap-2 mt-2">
             <button

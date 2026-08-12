@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
-import Image from "next/image";
+import { SafeImage } from "@/components/SafeImage";
 import { prisma } from "@/lib/prisma";
 import { getLocalized } from "@/lib/utils";
 import { FadeIn } from "@/components/FadeIn";
@@ -37,10 +37,9 @@ export default async function HallsPage({
               <Link href={`/${locale}/halls/${hall.slug}`} className="block group h-full">
                 <div className="relative rounded-2xl overflow-hidden shadow-sm hover:shadow-[0_18px_60px_rgba(20,15,9,0.22)] transition-all duration-500 h-[380px] md:h-[420px] ring-1 ring-transparent hover:ring-gold/40 flex flex-col">
                   <div className="absolute inset-0">
-                    <Image
+                    <SafeImage
                       src={hall.imagePath || "/images/museum/placeholders/hall-default.jpg"}
                       alt={getLocalized(hall, "title", locale)}
-                      fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       className="object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110"
                     />

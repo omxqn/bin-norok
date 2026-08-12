@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
+import { SafeImage } from "@/components/SafeImage";
 import { ImagePlaceholder } from "@/components/ImagePlaceholder";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -38,18 +38,16 @@ export function HallImageSlider({ images, fallbackText, className = "h-72" }: { 
             <>
               {/* Blurred background for a premium look when object is contained */}
               <div className="absolute inset-0 overflow-hidden">
-                <Image
+                <SafeImage
                   src={currentImage}
                   alt="Background"
-                  fill
                   className="object-cover blur-xl opacity-40 scale-110"
                 />
               </div>
               {/* Main uncropped image */}
-              <Image
+              <SafeImage
                 src={currentImage}
                 alt="Hall Image"
-                fill
                 className="object-contain z-10"
               />
             </>

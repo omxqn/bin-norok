@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import { SafeImage } from "@/components/SafeImage";
 import { Plus, Pencil } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getLocalized, formatDateTime } from "@/lib/utils";
@@ -59,10 +59,9 @@ export default async function AdminContentPage({
                     as the upload having failed. */}
                 {visit.imagePath ? (
                   <div className="relative w-16 h-16 rounded-lg shrink-0 border overflow-hidden bg-gray-100">
-                    <Image
+                    <SafeImage
                       src={visit.imagePath}
                       alt={getLocalized(visit, "name", locale)}
-                      fill
                       sizes="64px"
                       className="object-cover"
                     />
@@ -118,10 +117,9 @@ export default async function AdminContentPage({
               <div className="min-w-0 flex items-center gap-4">
                 {news.imagePath && (
                   <div className="relative w-16 h-16 rounded-lg shrink-0 border overflow-hidden bg-gray-100">
-                    <Image
+                    <SafeImage
                       src={news.imagePath}
                       alt={getLocalized(news, "title", locale)}
-                      fill
                       sizes="64px"
                       className="object-cover"
                     />

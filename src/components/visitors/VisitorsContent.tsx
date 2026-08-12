@@ -2,7 +2,7 @@
 
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
-import Image from "next/image";
+import { SafeImage } from "@/components/SafeImage";
 import { PageHero } from "@/components/PageHero";
 import { Guestbook } from "@/components/visitors/Guestbook";
 import { getLocalized, formatDate } from "@/lib/utils";
@@ -100,10 +100,9 @@ export function VisitorsContent({
                 {/* The admin uploads a photo per visit — show it instead of the
                     grey placeholder that used to cover every card. */}
                 {visit.imagePath ? (
-                  <Image
+                  <SafeImage
                     src={visit.imagePath}
                     alt={getLocalized(visit, "name", locale)}
-                    fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover"
                   />
@@ -153,10 +152,9 @@ export function VisitorsContent({
             >
               {news.imagePath && (
                 <div className="relative w-full h-44 rounded-xl overflow-hidden mb-5 bg-gray-200">
-                  <Image
+                  <SafeImage
                     src={news.imagePath}
                     alt={getLocalized(news, "title", locale)}
-                    fill
                     sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover"
                   />

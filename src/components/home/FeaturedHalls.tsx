@@ -3,7 +3,7 @@
 import { useTranslations, useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import Image from "next/image";
+import { SafeImage } from "@/components/SafeImage";
 import { useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
@@ -71,10 +71,9 @@ export function FeaturedHalls({ halls }: { halls: FeaturedHallData[] }) {
                   isActive ? "md:flex-[3] border-primary/20" : "md:flex-[1] border-transparent"
                 } flex-1`}
               >
-                <Image 
+                <SafeImage 
                   src={hall.imagePath || "/images/museum/placeholders/hall-default.jpg"}
                   alt={isAr ? hall.titleAr : hall.titleEn}
-                  fill
                   className={`object-cover transition-transform duration-1000 ${isActive ? 'scale-105' : 'scale-100 grayscale-[30%]'}`}
                 />
                 

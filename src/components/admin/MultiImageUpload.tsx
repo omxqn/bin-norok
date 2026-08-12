@@ -3,7 +3,7 @@
 // Gallery manager for hall forms: upload several images, reorder-free simple list.
 
 import { useRef, useTransition } from "react";
-import Image from "next/image";
+import { SafeImage } from "@/components/SafeImage";
 import { toast } from "sonner";
 import { ImagePlus, Loader2, X } from "lucide-react";
 import { uploadImage } from "@/actions/upload";
@@ -70,7 +70,7 @@ export function MultiImageUpload({
       <div className="flex flex-wrap gap-3">
         {paths.map((path, index) => (
           <div key={`${path}-${index}`} className="relative w-24 h-24 rounded-lg overflow-hidden border border-gray-200 bg-gray-50 group">
-            <Image src={path} alt={`Gallery ${index + 1}`} fill className="object-cover" />
+            <SafeImage src={path} alt={`Gallery ${index + 1}`} sizes="96px" />
             <button
               type="button"
               onClick={() => onChange(paths.filter((_, i) => i !== index))}

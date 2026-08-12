@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
-import Image from "next/image";
+import { SafeImage } from "@/components/SafeImage";
 import { prisma } from "@/lib/prisma";
 import { getLocalized, formatDate } from "@/lib/utils";
 import { ImagePlaceholder } from "@/components/ImagePlaceholder";
@@ -59,10 +59,9 @@ export default async function NewsPage({
                 <article className="heritage-card overflow-hidden grid md:grid-cols-2 !p-0">
                   <div className="relative h-56 md:h-auto md:min-h-[320px] overflow-hidden">
                     {featured.imagePath && !featured.imagePath.includes("/placeholders/") ? (
-                      <Image
+                      <SafeImage
                         src={featured.imagePath}
                         alt={getLocalized(featured, "title", locale)}
-                        fill
                         sizes="(max-width: 768px) 100vw, 50vw"
                         className="object-cover transition-transform duration-[1200ms] group-hover:scale-105"
                       />
@@ -105,10 +104,9 @@ export default async function NewsPage({
                       <article className="heritage-card overflow-hidden h-full flex flex-col !p-0">
                         <div className="relative h-48 overflow-hidden">
                           {item.imagePath && !item.imagePath.includes("/placeholders/") ? (
-                            <Image
+                            <SafeImage
                               src={item.imagePath}
                               alt={getLocalized(item, "title", locale)}
-                              fill
                               sizes="(max-width: 768px) 100vw, 33vw"
                               className="object-cover transition-transform duration-700 group-hover:scale-105"
                             />

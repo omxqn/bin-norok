@@ -15,7 +15,7 @@ const contentSecurityPolicy = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline'",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' blob: data: https://images.unsplash.com",
+  "img-src 'self' blob: data: https://images.unsplash.com https://*.public.blob.vercel-storage.com",
   "font-src 'self' data:",
   "connect-src 'self'",
   "object-src 'none'",
@@ -57,10 +57,18 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
+    // Keep in sync with isOptimizableImageSrc() in src/lib/image-src.ts: a
+    // host missing here makes next/image throw while rendering, which fails
+    // the whole page instead of just the image.
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
+      },
+      {
+        // Admin uploads, when the app runs on Vercel (BLOB_READ_WRITE_TOKEN).
+        protocol: 'https',
+        hostname: '*.public.blob.vercel-storage.com',
       },
     ],
   },
