@@ -183,7 +183,7 @@ export function ItemForm({
         </div>
       </div>
 
-      <ImageUpload initialPath={initial.imagePath} label={isAr ? "صورة المقتنى" : "Item Image"} />
+      <ImageUpload initialPath={initial.imagePath} label={isAr ? "صورة المقتنى" : "Item Image"} isAr={isAr} />
 
       <div className="flex flex-wrap gap-6">
         <label className="flex items-center gap-2 text-sm text-gray-700 font-medium">

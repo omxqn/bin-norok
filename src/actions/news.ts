@@ -5,13 +5,31 @@ import { auth } from "@/lib/auth";
 import { newsEventSchema, NewsEventFormValues } from "@/schemas/news";
 import { revalidatePath } from "next/cache";
 
+// These reads return unpublished drafts, and every export of a "use server"
+// file is callable by anyone over HTTP — so they are gated like the writes
+// below. Public pages query Prisma directly with `published: true`.
+async function requireEditor() {
+  const session = await auth();
+  const role = (session?.user as { role?: string } | undefined)?.role;
+
+  if (!session?.user || !role || !["ADMIN", "SUPER_ADMIN", "EDITOR"].includes(role)) {
+    throw new Error("Unauthorized");
+  }
+
+  return session;
+}
+
 export async function getNewsEvents() {
+  await requireEditor();
+
   return await prisma.newsEvent.findMany({
     orderBy: { createdAt: "desc" },
   });
 }
 
 export async function getNewsEvent(id: string) {
+  await requireEditor();
+
   return await prisma.newsEvent.findUnique({
     where: { id },
   });

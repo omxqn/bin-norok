@@ -9,13 +9,16 @@ import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Icon } from "@/components/Icon";
 
-export function FeatureCards() {
+export function FeatureCards({ disabledPages = [] }: { disabledPages?: string[] }) {
   const locale = useLocale();
   const isAr = locale === "ar";
   const Arrow = isAr ? ArrowLeft : ArrowRight;
 
+  // `slug` maps to the admin page toggles; a card for a disabled page is
+  // dropped rather than linking visitors into a closed page.
   const cards = [
     {
+      slug: "halls",
       icon: "sections",
       accent: "var(--color-wine)",
       stat: isAr ? "٦" : "6",
@@ -27,6 +30,7 @@ export function FeatureCards() {
       href: `/${locale}/halls`,
     },
     {
+      slug: "visit",
       icon: "visit",
       accent: "var(--color-gold-dark)",
       stat: isAr ? "٩–٥" : "9–5",
@@ -38,6 +42,7 @@ export function FeatureCards() {
       href: `/${locale}/visit`,
     },
     {
+      slug: "visitors",
       icon: "family",
       accent: "var(--color-forest)",
       stat: "★",
@@ -48,7 +53,9 @@ export function FeatureCards() {
         : "Official visits, media coverage, and guest testimonials.",
       href: `/${locale}/visitors`,
     },
-  ];
+  ].filter((card) => !disabledPages.includes(card.slug));
+
+  if (cards.length === 0) return null;
 
   return (
     <section className="py-20 md:py-24">

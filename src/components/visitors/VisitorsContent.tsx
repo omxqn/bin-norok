@@ -2,6 +2,7 @@
 
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { PageHero } from "@/components/PageHero";
 import { Guestbook } from "@/components/visitors/Guestbook";
 import { getLocalized, formatDate } from "@/lib/utils";
@@ -29,6 +30,7 @@ interface NewsEvent {
   contentAr: string;
   contentEn: string;
   type: "NEWS" | "EVENT";
+  imagePath: string | null;
   link: string | null;
   createdAt: Date;
   eventDate: Date | null;
@@ -95,9 +97,21 @@ export function VisitorsContent({
               className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg transition-shadow relative overflow-hidden group flex flex-col"
             >
               <div className="w-full h-56 relative overflow-hidden shrink-0 bg-gray-200">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-16 h-16 bg-gray-300 rounded-full opacity-50"></div>
-                </div>
+                {/* The admin uploads a photo per visit — show it instead of the
+                    grey placeholder that used to cover every card. */}
+                {visit.imagePath ? (
+                  <Image
+                    src={visit.imagePath}
+                    alt={getLocalized(visit, "name", locale)}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-16 h-16 bg-gray-300 rounded-full opacity-50"></div>
+                  </div>
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                 <div className="absolute bottom-4 start-4 end-4">
                   <h3 className="text-xl font-bold text-white mb-1 drop-shadow-md">{getLocalized(visit, "name", locale)}</h3>
@@ -137,6 +151,17 @@ export function VisitorsContent({
               transition={{ duration: 0.5, delay: idx * 0.1 }}
               className="bg-gray-50 rounded-2xl p-6 border border-gray-200 hover:border-primary/30 transition-colors"
             >
+              {news.imagePath && (
+                <div className="relative w-full h-44 rounded-xl overflow-hidden mb-5 bg-gray-200">
+                  <Image
+                    src={news.imagePath}
+                    alt={getLocalized(news, "title", locale)}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover"
+                  />
+                </div>
+              )}
               <div className="flex justify-between items-start mb-4">
                 <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${news.type === 'EVENT' ? 'bg-purple-100 text-purple-700' : 'bg-primary/10 text-primary'}`}>
                   {news.type === 'EVENT' ? (isAr ? "فعالية" : "Event") : (isAr ? "خبر" : "News")}

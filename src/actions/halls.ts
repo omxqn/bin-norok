@@ -5,13 +5,31 @@ import { auth } from "@/lib/auth";
 import { hallSchema, HallFormValues } from "@/schemas/hall";
 import { revalidatePath } from "next/cache";
 
+// Reads here include unpublished halls, and a "use server" export is a public
+// endpoint — gate them like the writes. Public pages query Prisma directly
+// with `published: true`.
+async function requireEditor() {
+  const session = await auth();
+  const role = (session?.user as { role?: string } | undefined)?.role;
+
+  if (!session?.user || !role || !["ADMIN", "SUPER_ADMIN", "EDITOR"].includes(role)) {
+    throw new Error("Unauthorized");
+  }
+
+  return session;
+}
+
 export async function getHalls() {
+  await requireEditor();
+
   return await prisma.museumHall.findMany({
     orderBy: { order: "asc" },
   });
 }
 
 export async function getHall(id: string) {
+  await requireEditor();
+
   return await prisma.museumHall.findUnique({
     where: { id },
   });

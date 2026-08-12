@@ -4,7 +4,17 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
+// A "use server" export is a public POST endpoint, so this admin read is
+// gated like the writes below. The public visitors page queries Prisma
+// directly.
 export async function getOfficialVisits() {
+  const session = await auth();
+  const role = (session?.user as { role?: string } | undefined)?.role;
+
+  if (!session?.user || !role || !["ADMIN", "SUPER_ADMIN", "EDITOR"].includes(role)) {
+    throw new Error("Unauthorized");
+  }
+
   return await prisma.officialVisit.findMany({
     orderBy: { order: "asc" },
   });

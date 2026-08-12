@@ -13,10 +13,13 @@ const HERO_IMAGES = [
   "/images/museum/halls/Living room.jpeg",
 ];
 
-export function Hero() {
+export function Hero({ disabledPages = [] }: { disabledPages?: string[] }) {
   const t = useTranslations("Hero");
   const locale = useLocale();
   const isAr = locale === "ar";
+  // Both CTAs point at pages an admin can switch off — see /admin/pages.
+  const visitEnabled = !disabledPages.includes("visit");
+  const hallsEnabled = !disabledPages.includes("halls");
   const reduceMotion = useReducedMotion();
   const [currentImage, setCurrentImage] = useState(0);
 
@@ -101,12 +104,16 @@ export function Hero() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 w-full sm:w-auto">
-            <Button className="group bg-gold hover:bg-gold-2 text-[#1a1510] rounded-md px-8 py-6 text-[12px] font-bold tracking-[0.08em] uppercase transition-all duration-300 hover:-translate-y-0.5 shadow-[0_8px_30px_rgba(176,141,63,0.4)]" asChild>
-              <Link href={`/${locale}/visit`}>{t("cta")}</Link>
-            </Button>
-            <Button variant="outline" className="text-[#F0E8D8] border-[#F0E8D8]/40 bg-white/5 hover:bg-white/12 hover:border-[#F0E8D8]/70 hover:text-white rounded-md px-8 py-6 text-[12px] font-bold tracking-[0.08em] uppercase backdrop-blur-md transition-all duration-300" asChild>
-              <Link href={`/${locale}/halls`}>{t("secondaryCta")}</Link>
-            </Button>
+            {visitEnabled && (
+              <Button className="group bg-gold hover:bg-gold-2 text-[#1a1510] rounded-md px-8 py-6 text-[12px] font-bold tracking-[0.08em] uppercase transition-all duration-300 hover:-translate-y-0.5 shadow-[0_8px_30px_rgba(176,141,63,0.4)]" asChild>
+                <Link href={`/${locale}/visit`}>{t("cta")}</Link>
+              </Button>
+            )}
+            {hallsEnabled && (
+              <Button variant="outline" className="text-[#F0E8D8] border-[#F0E8D8]/40 bg-white/5 hover:bg-white/12 hover:border-[#F0E8D8]/70 hover:text-white rounded-md px-8 py-6 text-[12px] font-bold tracking-[0.08em] uppercase backdrop-blur-md transition-all duration-300" asChild>
+                <Link href={`/${locale}/halls`}>{t("secondaryCta")}</Link>
+              </Button>
+            )}
           </div>
         </motion.div>
       </div>

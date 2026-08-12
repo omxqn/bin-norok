@@ -7,6 +7,7 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { ImagePlus, Loader2, X } from "lucide-react";
 import { uploadImage } from "@/actions/upload";
+import { MAX_FILE_SIZE } from "@/lib/sanitize";
 
 export function MultiImageUpload({
   paths,
@@ -26,13 +27,25 @@ export function MultiImageUpload({
     startTransition(async () => {
       const added: string[] = [];
       for (const file of list) {
+        // Refuse oversized files up front — the request would be rejected by
+        // the server action body limit before reaching our own check.
+        if (file.size > MAX_FILE_SIZE) {
+          toast.error(`${file.name}: max 5MB`);
+          continue;
+        }
+
         const formData = new FormData();
         formData.append("file", file);
-        const result = await uploadImage(formData);
-        if (result.success) {
-          added.push(result.path);
-        } else {
-          toast.error(`${file.name}: ${result.error}`);
+
+        try {
+          const result = await uploadImage(formData);
+          if (result.success) {
+            added.push(result.path);
+          } else {
+            toast.error(`${file.name}: ${result.error}`);
+          }
+        } catch {
+          toast.error(`${file.name}: upload failed`);
         }
       }
       if (added.length > 0) {

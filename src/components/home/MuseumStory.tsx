@@ -5,8 +5,10 @@ import { FadeIn } from "../FadeIn";
 import Link from "next/link";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 
-export function MuseumStory() {
+export function MuseumStory({ disabledPages = [] }: { disabledPages?: string[] }) {
   const locale = useLocale();
+  // The "read more" button lands on /about, which an admin can switch off.
+  const aboutEnabled = !disabledPages.includes("about");
 
   return (
     <section className="pt-28 pb-14 relative overflow-hidden text-foreground">
@@ -33,6 +35,7 @@ export function MuseumStory() {
                 : "Bin Norouk Museum is not just walls holding ancient artifacts; it is a window into a deep history, telling the details of our ancestors' daily lives. It was founded by a deep passion for preserving heritage and passing it on to future generations so it remains alive in memory."}
             </p>
 
+            {aboutEnabled && (
             <div className="pt-4 relative z-10 flex justify-center">
               <Link
                 href={`/${locale}/about`}
@@ -46,6 +49,7 @@ export function MuseumStory() {
                 )}
               </Link>
             </div>
+            )}
 
           </div>
         </FadeIn>

@@ -5,15 +5,18 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { ImagePlus, Loader2, X } from "lucide-react";
 import { uploadImage } from "@/actions/upload";
+import { MAX_FILE_SIZE } from "@/lib/sanitize";
 
 export function ImageUpload({
   name = "imagePath",
   initialPath,
   label,
+  isAr = false,
 }: {
   name?: string;
   initialPath?: string | null;
   label?: string;
+  isAr?: boolean;
 }) {
   const [imagePath, setImagePath] = useState(initialPath ?? "");
   const [isPending, startTransition] = useTransition();
@@ -21,15 +24,40 @@ export function ImageUpload({
 
   function handleFile(file: File | undefined) {
     if (!file) return;
+
+    // Checked here as well as on the server: rejecting an oversized file
+    // before the request is sent gives an explanation instead of a network
+    // error, and saves uploading megabytes that are about to be refused.
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error(
+        isAr
+          ? "حجم الصورة يجب أن يكون أقل من 5 ميجابايت"
+          : "Image must be smaller than 5MB"
+      );
+      return;
+    }
+
     const formData = new FormData();
     formData.append("file", file);
+
     startTransition(async () => {
-      const result = await uploadImage(formData);
-      if (result.success) {
-        setImagePath(result.path);
-        toast.success("Image uploaded");
-      } else {
-        toast.error(result.error);
+      try {
+        const result = await uploadImage(formData);
+        if (result.success) {
+          setImagePath(result.path);
+          toast.success(isAr ? "تم رفع الصورة" : "Image uploaded");
+        } else {
+          toast.error(result.error);
+        }
+      } catch {
+        // A thrown error here is the request itself failing — body size limit,
+        // dropped connection, an expired session. Without this the promise
+        // rejected silently and the picker just looked stuck.
+        toast.error(
+          isAr
+            ? "تعذّر رفع الصورة. تأكد من الاتصال وأن حجم الصورة أقل من 5 ميجابايت."
+            : "Upload failed. Check your connection and that the image is under 5MB."
+        );
       }
     });
   }
@@ -43,13 +71,18 @@ export function ImageUpload({
         type="file"
         accept="image/jpeg,image/png,image/webp,image/avif"
         className="hidden"
-        onChange={(e) => handleFile(e.target.files?.[0])}
+        // Reset the value so picking the same file twice still fires change —
+        // otherwise a retry after a failed upload does nothing.
+        onChange={(e) => {
+          handleFile(e.target.files?.[0]);
+          e.target.value = "";
+        }}
       />
 
       {imagePath ? (
         <div className="relative w-full max-w-xs">
           <div className="relative h-40 w-full rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
-            <Image src={imagePath} alt="Preview" fill className="object-cover" />
+            <Image src={imagePath} alt="Preview" fill sizes="320px" className="object-cover" />
           </div>
           <div className="flex gap-2 mt-2">
             <button
@@ -58,14 +91,16 @@ export function ImageUpload({
               disabled={isPending}
               className="text-sm font-bold text-primary hover:underline disabled:opacity-50"
             >
-              {isPending ? "..." : "Change image"}
+              {isPending
+                ? isAr ? "جارٍ الرفع…" : "Uploading…"
+                : isAr ? "تغيير الصورة" : "Change image"}
             </button>
             <button
               type="button"
               onClick={() => setImagePath("")}
               className="text-sm font-bold text-red-500 hover:underline inline-flex items-center gap-1"
             >
-              <X size={13} /> Remove
+              <X size={13} /> {isAr ? "إزالة" : "Remove"}
             </button>
           </div>
         </div>
@@ -81,7 +116,9 @@ export function ImageUpload({
           ) : (
             <>
               <ImagePlus className="w-8 h-8" />
-              <span className="text-sm font-medium">Upload image (JPG/PNG, max 5MB)</span>
+              <span className="text-sm font-medium">
+                {isAr ? "رفع صورة (JPG/PNG، حتى 5 ميجابايت)" : "Upload image (JPG/PNG, max 5MB)"}
+              </span>
             </>
           )}
         </button>

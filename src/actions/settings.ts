@@ -9,7 +9,24 @@ import { SITE_SETTINGS_TAG } from "@/lib/site-settings";
 // instead of the next visitor getting stale content.
 import { revalidatePath, updateTag } from "next/cache";
 
+// Every export in a "use server" file is a public POST endpoint, so a read
+// with no session check is an open API — not just an internal helper. The
+// public site reads what it needs through the cached helpers in
+// src/lib/site-settings.ts instead.
+async function requireAdmin(roles: string[] = ["ADMIN", "SUPER_ADMIN"]) {
+  const session = await auth();
+  const role = (session?.user as { role?: string } | undefined)?.role;
+
+  if (!session?.user || !role || !roles.includes(role)) {
+    throw new Error("Unauthorized");
+  }
+
+  return session;
+}
+
 export async function getSettings() {
+  await requireAdmin();
+
   return await prisma.siteSetting.findMany({
     orderBy: { key: "asc" },
   });

@@ -126,7 +126,7 @@ export function HallForm({ hall, locale }: { hall?: HallFormData; locale: string
         </div>
       </div>
 
-      <ImageUpload initialPath={initial.imagePath} label={isAr ? "الصورة الرئيسية للقاعة" : "Main Hall Image"} />
+      <ImageUpload initialPath={initial.imagePath} label={isAr ? "الصورة الرئيسية للقاعة" : "Main Hall Image"} isAr={isAr} />
 
       <MultiImageUpload
         paths={gallery}

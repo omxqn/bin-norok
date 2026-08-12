@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Plus, Pencil } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getLocalized, formatDateTime } from "@/lib/utils";
@@ -53,9 +54,24 @@ export default async function AdminContentPage({
           {visits.map((visit) => (
             <div key={visit.id} className="px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="min-w-0 flex items-center gap-4">
-                <div className="w-16 h-16 bg-gray-100 rounded-lg shrink-0 border flex items-center justify-center text-gray-400 text-xs">
-                  {isAr ? "بدون صورة" : "No image"}
-                </div>
+                {/* The form has always uploaded an image for a visit; this list
+                    used to render a fixed "No image" box regardless, which read
+                    as the upload having failed. */}
+                {visit.imagePath ? (
+                  <div className="relative w-16 h-16 rounded-lg shrink-0 border overflow-hidden bg-gray-100">
+                    <Image
+                      src={visit.imagePath}
+                      alt={getLocalized(visit, "name", locale)}
+                      fill
+                      sizes="64px"
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-16 h-16 bg-gray-100 rounded-lg shrink-0 border flex items-center justify-center text-gray-400 text-xs text-center px-1">
+                    {isAr ? "بدون صورة" : "No image"}
+                  </div>
+                )}
                 <div>
                   <p className="font-bold text-foreground">{getLocalized(visit, "name", locale)}</p>
                   <p className="text-sm text-gray-500">{getLocalized(visit, "title", locale)}</p>
@@ -99,24 +115,37 @@ export default async function AdminContentPage({
         <div className="heritage-card divide-y divide-gray-100">
           {newsEvents.map((news) => (
             <div key={news.id} className="px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div className="min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${news.type === 'EVENT' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
-                    {news.type === 'EVENT' ? (isAr ? 'فعالية' : 'Event') : (isAr ? 'خبر' : 'News')}
-                  </span>
-                  {!news.published && (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">
-                      {isAr ? 'مسودة' : 'Draft'}
+              <div className="min-w-0 flex items-center gap-4">
+                {news.imagePath && (
+                  <div className="relative w-16 h-16 rounded-lg shrink-0 border overflow-hidden bg-gray-100">
+                    <Image
+                      src={news.imagePath}
+                      alt={getLocalized(news, "title", locale)}
+                      fill
+                      sizes="64px"
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${news.type === 'EVENT' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
+                      {news.type === 'EVENT' ? (isAr ? 'فعالية' : 'Event') : (isAr ? 'خبر' : 'News')}
                     </span>
-                  )}
-                  {news.featured && (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gold/20 text-gold-dark">
-                      {isAr ? 'مميز' : 'Featured'}
-                    </span>
-                  )}
+                    {!news.published && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">
+                        {isAr ? 'مسودة' : 'Draft'}
+                      </span>
+                    )}
+                    {news.featured && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gold/20 text-gold-dark">
+                        {isAr ? 'مميز' : 'Featured'}
+                      </span>
+                    )}
+                  </div>
+                  <p className="font-bold text-foreground">{getLocalized(news, "title", locale)}</p>
+                  <p className="text-xs text-gray-400 mt-1">{formatDateTime(news.createdAt, locale)}</p>
                 </div>
-                <p className="font-bold text-foreground">{getLocalized(news, "title", locale)}</p>
-                <p className="text-xs text-gray-400 mt-1">{formatDateTime(news.createdAt, locale)}</p>
               </div>
               <div className="flex items-center gap-3 shrink-0" dir="ltr">
                 <Link

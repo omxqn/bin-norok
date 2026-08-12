@@ -144,7 +144,7 @@ export function NewsForm({ article, locale }: { article?: NewsFormData; locale: 
         </div>
       </div>
 
-      <ImageUpload initialPath={initial.imagePath} label={isAr ? "صورة المقال" : "Article Image"} />
+      <ImageUpload initialPath={initial.imagePath} label={isAr ? "صورة المقال" : "Article Image"} isAr={isAr} />
 
       <div className="grid sm:grid-cols-1 gap-5">
         <div>

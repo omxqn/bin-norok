@@ -19,17 +19,90 @@ export function pageToggleKey(slug: PageSlug): string {
   return `page.${slug}.enabled`;
 }
 
+// `note` spells out what a visitor loses when the page is switched off —
+// especially where disabling also closes a form (see the server actions that
+// re-check the same flag).
 export const MANAGEABLE_PAGES = [
-  { slug: "visit", path: "/visit", labelAr: "خطط لزيارتك (الحجز)", labelEn: "Visit (Booking)" },
-  { slug: "contact", path: "/contact", labelAr: "التواصل", labelEn: "Contact" },
-  { slug: "collections", path: "/collections", labelAr: "المقتنيات", labelEn: "Collections" },
-  { slug: "halls", path: "/halls", labelAr: "قاعات العرض", labelEn: "Halls" },
-  { slug: "visitors", path: "/visitors", labelAr: "الزوّار والأخبار", labelEn: "Visitors & News" },
-  { slug: "news", path: "/news", labelAr: "الأخبار", labelEn: "News" },
-  { slug: "heritage", path: "/heritage", labelAr: "رحلة التراث", labelEn: "Heritage" },
-  { slug: "sohar", path: "/sohar", labelAr: "صحار", labelEn: "Sohar" },
-  { slug: "virtual-tour", path: "/virtual-tour", labelAr: "الجولة الافتراضية", labelEn: "Virtual Tour" },
-  { slug: "about", path: "/about", labelAr: "عن المتحف", labelEn: "About" },
+  {
+    slug: "visit",
+    path: "/visit",
+    labelAr: "خطط لزيارتك (الحجز)",
+    labelEn: "Visit (Booking)",
+    noteAr: "إيقافها يمنع استقبال أي حجز جديد.",
+    noteEn: "Disabling also stops any new booking from being submitted.",
+  },
+  {
+    slug: "contact",
+    path: "/contact",
+    labelAr: "التواصل",
+    labelEn: "Contact",
+    noteAr: "إيقافها يمنع إرسال رسائل التواصل.",
+    noteEn: "Disabling also stops the contact form from being submitted.",
+  },
+  {
+    slug: "collections",
+    path: "/collections",
+    labelAr: "المقتنيات",
+    labelEn: "Collections",
+    noteAr: "يشمل صفحات تفاصيل كل مقتنى.",
+    noteEn: "Covers the detail page of every item too.",
+  },
+  {
+    slug: "halls",
+    path: "/halls",
+    labelAr: "قاعات العرض",
+    labelEn: "Halls",
+    noteAr: "يشمل صفحات تفاصيل كل قاعة.",
+    noteEn: "Covers the detail page of every hall too.",
+  },
+  {
+    slug: "visitors",
+    path: "/visitors",
+    labelAr: "الزوّار والأخبار",
+    labelEn: "Visitors & News",
+    noteAr: "إيقافها يمنع إضافة مشاركات جديدة في سجل الزوّار.",
+    noteEn: "Disabling also closes the guestbook to new entries.",
+  },
+  {
+    slug: "news",
+    path: "/news",
+    labelAr: "الأخبار",
+    labelEn: "News",
+    noteAr: "يشمل صفحات تفاصيل كل خبر.",
+    noteEn: "Covers the article page of every news item too.",
+  },
+  {
+    slug: "heritage",
+    path: "/heritage",
+    labelAr: "رحلة التراث",
+    labelEn: "Heritage",
+    noteAr: "صفحة تعريفية بالخط الزمني للتراث.",
+    noteEn: "The heritage timeline page.",
+  },
+  {
+    slug: "sohar",
+    path: "/sohar",
+    labelAr: "صحار",
+    labelEn: "Sohar",
+    noteAr: "دليل زيارة مدينة صحار.",
+    noteEn: "The Sohar city guide.",
+  },
+  {
+    slug: "virtual-tour",
+    path: "/virtual-tour",
+    labelAr: "الجولة الافتراضية",
+    labelEn: "Virtual Tour",
+    noteAr: "الجولة التفاعلية داخل المتحف.",
+    noteEn: "The interactive walkthrough of the museum.",
+  },
+  {
+    slug: "about",
+    path: "/about",
+    labelAr: "عن المتحف",
+    labelEn: "About",
+    noteAr: "قصة المتحف والعائلة المؤسِّسة.",
+    noteEn: "The museum story and founding family.",
+  },
 ] as const;
 
 export type PageSlug = (typeof MANAGEABLE_PAGES)[number]["slug"];

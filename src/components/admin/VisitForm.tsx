@@ -120,7 +120,7 @@ export function VisitForm({ visit, locale }: { visit?: VisitFormData; locale: st
         </div>
       </div>
 
-      <ImageUpload initialPath={initial.imagePath ?? ""} label={isAr ? "صورة الزيارة (اختياري)" : "Visit Image (optional)"} />
+      <ImageUpload initialPath={initial.imagePath ?? ""} label={isAr ? "صورة الزيارة (اختياري)" : "Visit Image (optional)"} isAr={isAr} />
 
       <div className="flex gap-3 pt-2">
         <Button type="submit" disabled={isPending} className="bg-primary hover:bg-primary/90 text-white px-8">

@@ -5,9 +5,25 @@ import { auth } from "@/lib/auth";
 import { collectionItemSchema, CollectionItemFormValues, collectionCategorySchema, CollectionCategoryFormValues } from "@/schemas/collection";
 import { revalidatePath } from "next/cache";
 
+// Reads here include unpublished items, and a "use server" export is a public
+// endpoint — gate them like the writes. Public pages query Prisma directly
+// with `published: true`.
+async function requireEditor() {
+  const session = await auth();
+  const role = (session?.user as { role?: string } | undefined)?.role;
+
+  if (!session?.user || !role || !["ADMIN", "SUPER_ADMIN", "EDITOR"].includes(role)) {
+    throw new Error("Unauthorized");
+  }
+
+  return session;
+}
+
 // --- Items ---
 
 export async function getCollectionItems() {
+  await requireEditor();
+
   return await prisma.collectionItem.findMany({
     orderBy: { createdAt: "desc" },
     include: { category: true, hall: true },
@@ -15,6 +31,8 @@ export async function getCollectionItems() {
 }
 
 export async function getCollectionItem(id: string) {
+  await requireEditor();
+
   return await prisma.collectionItem.findUnique({
     where: { id },
   });
@@ -100,6 +118,8 @@ export async function deleteCollectionItem(id: string) {
 // --- Categories ---
 
 export async function getCategories() {
+  await requireEditor();
+
   return await prisma.collectionCategory.findMany();
 }
 

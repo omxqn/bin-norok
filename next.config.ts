@@ -47,6 +47,15 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  experimental: {
+    serverActions: {
+      // uploadImage() accepts images up to MAX_FILE_SIZE (5MB), but a Server
+      // Action request is capped at 1MB by default — so every photo straight
+      // off a phone was rejected by the framework before the action ever ran.
+      // The extra headroom covers multipart boundaries and part headers.
+      bodySizeLimit: '6mb',
+    },
+  },
   images: {
     remotePatterns: [
       {

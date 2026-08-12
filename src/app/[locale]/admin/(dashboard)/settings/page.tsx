@@ -1,7 +1,10 @@
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { ArrowRight, LayoutTemplate } from "lucide-react";
+import { auth } from "@/lib/auth";
 import { getSettings } from "@/actions/settings";
 import { SettingEditor } from "@/components/admin/SettingEditor";
-import { PageToggles } from "@/components/admin/PageToggles";
-import { getDisabledPages } from "@/lib/page-toggles";
+import { getDisabledPages, MANAGEABLE_PAGES } from "@/lib/page-toggles";
 
 export default async function AdminSettingsPage({
   params,
@@ -10,6 +13,18 @@ export default async function AdminSettingsPage({
 }) {
   const { locale } = await params;
   const isAr = locale === "ar";
+
+  // Settings are admin-only — checked here so an EDITOR is sent back to the
+  // dashboard instead of tripping the Unauthorized error thrown by
+  // getSettings(). The dashboard layout does not re-run on client navigation,
+  // so it cannot stand in for this.
+  const session = await auth();
+  const role = (session?.user as { role?: string } | undefined)?.role;
+
+  if (!session?.user || !role || !["ADMIN", "SUPER_ADMIN"].includes(role)) {
+    redirect(`/${locale}/admin?error=insufficient_permissions`);
+  }
+
   const [allSettings, disabledPages] = await Promise.all([
     getSettings(),
     getDisabledPages(),
@@ -40,19 +55,33 @@ export default async function AdminSettingsPage({
         </a>
       </div>
 
-      <section className="space-y-3">
-        <div>
-          <h2 className="text-lg font-black text-foreground">
-            {isAr ? "الصفحات العامة" : "Public Pages"}
-          </h2>
-          <p className="text-sm text-gray-500">
-            {isAr
-              ? "أوقف أي صفحة مؤقتاً. إيقاف صفحة الزيارة يمنع استقبال أي حجز جديد."
-              : "Temporarily take a page offline. Disabling the Visit page also stops any new bookings from being submitted."}
-          </p>
+      {/* The switches themselves live on their own screen — this is the
+          pointer to them, plus an at-a-glance status. */}
+      <Link
+        href={`/${locale}/admin/pages`}
+        className="heritage-card flex items-center justify-between gap-4 px-5 py-4 hover:border-primary/40 transition-colors"
+      >
+        <div className="flex items-center gap-4 min-w-0">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+            <LayoutTemplate size={20} />
+          </div>
+          <div className="min-w-0">
+            <p className="font-black text-foreground">
+              {isAr ? "إدارة الصفحات" : "Page Management"}
+            </p>
+            <p className="text-sm text-gray-500">
+              {disabledPages.length === 0
+                ? isAr
+                  ? `جميع الصفحات (${MANAGEABLE_PAGES.length}) ظاهرة للزوار`
+                  : `All ${MANAGEABLE_PAGES.length} pages are visible to visitors`
+                : isAr
+                  ? `${disabledPages.length} صفحات موقوفة عن الزوار`
+                  : `${disabledPages.length} page(s) hidden from visitors`}
+            </p>
+          </div>
         </div>
-        <PageToggles disabledSlugs={disabledPages} isAr={isAr} />
-      </section>
+        <ArrowRight className="w-4 h-4 text-gray-400 shrink-0 rtl:rotate-180" />
+      </Link>
 
       <section className="space-y-3">
         <h2 className="text-lg font-black text-foreground">

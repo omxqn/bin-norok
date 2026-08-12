@@ -10,8 +10,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Calendar, Library, MessageSquare, Newspaper,
-  Users, Settings, Activity, LogOut, MoreHorizontal, X, Briefcase
+  Users, Settings, Activity, LayoutTemplate, MoreHorizontal, X
 } from "lucide-react";
+import { SignOutButton } from "@/components/admin/SignOutButton";
 
 export interface AdminNavProps {
   locale: string;
@@ -29,6 +30,11 @@ export function AdminNav(props: AdminNavProps) {
   const pathname = usePathname();
   const [moreOpen, setMoreOpen] = useState(false);
 
+  // Page management and settings are admin-only (both pages redirect an
+  // EDITOR back to the dashboard), so don't offer them to someone who cannot
+  // open them.
+  const isAdmin = ["ADMIN", "SUPER_ADMIN"].includes(props.userRole ?? "");
+
   const items = [
     { key: "dash", name: isAr ? "نظرة عامة" : "Dashboard", href: `/${locale}/admin`, icon: LayoutDashboard, badge: 0, exact: true },
     { key: "bookings", name: isAr ? "الحجوزات" : "Bookings", href: `/${locale}/admin/bookings`, icon: Calendar, badge: props.pendingBookings },
@@ -36,7 +42,12 @@ export function AdminNav(props: AdminNavProps) {
     { key: "content", name: isAr ? "المحتوى التفاعلي" : "Content", href: `/${locale}/admin/content`, icon: Newspaper, badge: props.pendingGuestbook },
     { key: "messages", name: isAr ? "الرسائل" : "Messages", href: `/${locale}/admin/messages`, icon: MessageSquare, badge: props.unreadMessages },
     { key: "users", name: isAr ? "المستخدمون" : "Users", href: `/${locale}/admin/users`, icon: Users, badge: 0 },
-    { key: "settings", name: isAr ? "الإعدادات" : "Settings", href: `/${locale}/admin/settings`, icon: Settings, badge: 0 },
+    ...(isAdmin
+      ? [
+          { key: "pages", name: isAr ? "الصفحات" : "Pages", href: `/${locale}/admin/pages`, icon: LayoutTemplate, badge: 0 },
+          { key: "settings", name: isAr ? "الإعدادات" : "Settings", href: `/${locale}/admin/settings`, icon: Settings, badge: 0 },
+        ]
+      : []),
     { key: "logs", name: isAr ? "سجل النشاطات" : "Activity Log", href: `/${locale}/admin/logs`, icon: Activity, badge: 0 },
   ];
 
@@ -96,13 +107,11 @@ export function AdminNav(props: AdminNavProps) {
               {props.userRole}
             </span>
           </div>
-          <Link
-            href="/api/auth/signout"
-            className="flex items-center gap-3 px-4 py-2.5 text-red-300 hover:bg-red-500/15 rounded-lg transition-colors font-bold text-sm"
-          >
-            <LogOut className="w-4 h-4" />
-            {isAr ? "تسجيل الخروج" : "Sign Out"}
-          </Link>
+          <SignOutButton
+            locale={locale}
+            label={isAr ? "تسجيل الخروج" : "Sign Out"}
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-red-300 hover:bg-red-500/15 rounded-lg transition-colors font-bold text-sm disabled:opacity-60"
+          />
         </div>
       </aside>
 
@@ -112,9 +121,12 @@ export function AdminNav(props: AdminNavProps) {
           <span className="text-gold text-[9px] leading-none">◆</span>
           {isAr ? "إدارة المتحف" : "Museum Admin"}
         </h2>
-        <Link href="/api/auth/signout" className="text-red-300 p-1.5" aria-label={isAr ? "خروج" : "Sign out"}>
-          <LogOut className="w-5 h-5" />
-        </Link>
+        <SignOutButton
+          locale={locale}
+          label={isAr ? "خروج" : "Sign out"}
+          className="text-red-300 p-1.5 disabled:opacity-60"
+          iconOnly
+        />
       </div>
 
       {/* ===== Mobile bottom nav ===== */}
@@ -185,6 +197,14 @@ export function AdminNav(props: AdminNavProps) {
                   </Link>
                 );
               })}
+            </div>
+
+            <div className="mt-3">
+              <SignOutButton
+                locale={locale}
+                label={isAr ? "تسجيل الخروج" : "Sign Out"}
+                className="w-full flex items-center justify-center gap-2 p-4 rounded-xl border border-red-200 bg-white text-red-600 text-sm font-bold hover:bg-red-50 transition-colors disabled:opacity-60"
+              />
             </div>
           </div>
         </div>
