@@ -39,12 +39,11 @@ export async function loginAction(formData: FormData) {
 }
 
 /**
- * Sign out and land back on the localized login screen.
- *
- * The dashboard used to link to /api/auth/signout, which is a GET request to
- * Auth.js's own unstyled confirmation page and drops the visitor outside the
- * `[locale]` tree. A POST from a form clears the session in one step, and the
- * redirect keeps the admin in the language they were working in.
+ * Sign out and land on the museum home page, in the language the admin was
+ * working in — not the login screen, which would look like the sign-out had
+ * failed, and not /api/auth/signout, which the dashboard used to link to: that
+ * is a GET to Auth.js's own unstyled confirmation page and drops the visitor
+ * outside the `[locale]` tree entirely.
  *
  * Not wrapped in try/catch: signOut() signals its redirect by throwing, so
  * catching here would swallow it.
@@ -53,5 +52,5 @@ export async function signOutAction(formData: FormData) {
   const requested = String(formData.get("locale") ?? "");
   const locale = locales.includes(requested as Locale) ? requested : defaultLocale;
 
-  await signOut({ redirectTo: `/${locale}/admin/login` });
+  await signOut({ redirectTo: `/${locale}` });
 }
