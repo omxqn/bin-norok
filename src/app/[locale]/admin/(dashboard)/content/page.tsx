@@ -80,7 +80,7 @@ export default async function AdminContentPage({
               <div className="flex items-center gap-3 shrink-0" dir="ltr">
                 <Link
                   href={`/${locale}/admin/visits/${visit.id}`}
-                  className="text-slate-400 hover:text-blue-500 transition-colors"
+                  className="inline-flex items-center justify-center p-2.5 -m-1.5 rounded-lg text-slate-400 hover:text-blue-500 transition-colors"
                   title={isAr ? "تعديل" : "Edit"}
                 >
                   <Pencil size={16} />
@@ -148,7 +148,7 @@ export default async function AdminContentPage({
               <div className="flex items-center gap-3 shrink-0" dir="ltr">
                 <Link
                   href={`/${locale}/admin/news/${news.id}`}
-                  className="text-slate-400 hover:text-blue-500 transition-colors"
+                  className="inline-flex items-center justify-center p-2.5 -m-1.5 rounded-lg text-slate-400 hover:text-blue-500 transition-colors"
                   title={isAr ? "تعديل" : "Edit"}
                 >
                   <Pencil size={16} />

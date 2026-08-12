@@ -62,7 +62,7 @@ export function BookingActions({
       <button
         onClick={handleDelete}
         disabled={isPending}
-        className="text-slate-400 hover:text-red-500 transition-colors disabled:opacity-50"
+        className="inline-flex items-center justify-center p-2.5 -m-1.5 rounded-lg text-slate-400 hover:text-red-500 transition-colors disabled:opacity-50"
         title="Delete booking"
       >
         {isPending ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}

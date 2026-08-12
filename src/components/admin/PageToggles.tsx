@@ -130,7 +130,7 @@ export function PageToggles({
                   href={`/${locale}${page.path}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1 text-[11px] text-gray-400 hover:text-primary font-mono mt-1 transition-colors"
+                  className="inline-flex items-center gap-1 text-[11px] text-gray-400 hover:text-primary font-mono mt-1 py-1.5 transition-colors"
                 >
                   /{locale}
                   {page.path}
@@ -149,6 +149,9 @@ export function PageToggles({
                     : isAr ? "موقوفة" : "Disabled"}
                 </span>
 
+                {/* The padding is the touch target: the track stays 48x24
+                    while the button itself is comfortably tappable on a
+                    phone. -m-2 keeps the row spacing unchanged. */}
                 <button
                   type="button"
                   role="switch"
@@ -156,19 +159,23 @@ export function PageToggles({
                   aria-label={isAr ? page.labelAr : page.labelEn}
                   disabled={isBusy}
                   onClick={() => toggle(page.slug, !isEnabled)}
-                  className={`relative w-12 h-6 rounded-full transition-colors disabled:opacity-50 ${
-                    isEnabled ? "bg-green-600" : "bg-gray-300"
-                  }`}
+                  className="p-2 -m-2 rounded-full disabled:opacity-50 touch-manipulation"
                 >
-                  {pending === page.slug ? (
-                    <Loader2 className="w-4 h-4 animate-spin text-white mx-auto" />
-                  ) : (
-                    <span
-                      className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all ${
-                        isEnabled ? "left-[26px]" : "left-[2px]"
-                      }`}
-                    />
-                  )}
+                  <span
+                    className={`relative block w-12 h-6 rounded-full transition-colors ${
+                      isEnabled ? "bg-green-600" : "bg-gray-300"
+                    }`}
+                  >
+                    {pending === page.slug ? (
+                      <Loader2 className="w-4 h-4 animate-spin text-white mx-auto mt-1" />
+                    ) : (
+                      <span
+                        className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all ${
+                          isEnabled ? "left-[26px]" : "left-[2px]"
+                        }`}
+                      />
+                    )}
+                  </span>
                 </button>
               </div>
             </div>

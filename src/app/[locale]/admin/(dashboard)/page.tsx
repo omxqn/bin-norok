@@ -138,7 +138,7 @@ export default async function AdminDashboardPage({
         <div className="heritage-card p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold">{isAr ? "أحدث طلبات الحجز" : "Recent Bookings"}</h2>
-            <Link href={`/${locale}/admin/bookings`} className="text-sm text-primary hover:underline font-bold">
+            <Link href={`/${locale}/admin/bookings`} className="text-sm text-primary hover:underline font-bold inline-flex items-center py-2 px-2 -my-1 -mx-2 rounded-lg">
               {isAr ? "عرض الكل" : "View all"}
             </Link>
           </div>
@@ -179,7 +179,7 @@ export default async function AdminDashboardPage({
         <div className="heritage-card p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold">{isAr ? "أحدث الرسائل" : "Recent Messages"}</h2>
-            <Link href={`/${locale}/admin/messages`} className="text-sm text-primary hover:underline font-bold">
+            <Link href={`/${locale}/admin/messages`} className="text-sm text-primary hover:underline font-bold inline-flex items-center py-2 px-2 -my-1 -mx-2 rounded-lg">
               {isAr ? "عرض الكل" : "View all"}
             </Link>
           </div>

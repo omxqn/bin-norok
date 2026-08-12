@@ -187,11 +187,11 @@ export function ItemForm({
 
       <div className="flex flex-wrap gap-6">
         <label className="flex items-center gap-2 text-sm text-gray-700 font-medium">
-          <input type="checkbox" name="published" defaultChecked={initial.published} className="rounded w-4 h-4" />
+          <input type="checkbox" name="published" defaultChecked={initial.published} className="rounded w-5 h-5" />
           {isAr ? "منشور" : "Published"}
         </label>
         <label className="flex items-center gap-2 text-sm text-gray-700 font-medium">
-          <input type="checkbox" name="featured" defaultChecked={initial.featured} className="rounded w-4 h-4" />
+          <input type="checkbox" name="featured" defaultChecked={initial.featured} className="rounded w-5 h-5" />
           {isAr ? "مميز (يظهر في الواجهة)" : "Featured"}
         </label>
       </div>

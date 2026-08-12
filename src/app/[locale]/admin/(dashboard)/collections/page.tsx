@@ -72,7 +72,7 @@ export default async function AdminCollectionsPage({
                 <PublishToggle entity="hall" id={hall.id} published={hall.published} />
                 <Link
                   href={`/${locale}/admin/halls/${hall.id}`}
-                  className="text-slate-400 hover:text-blue-500 transition-colors"
+                  className="inline-flex items-center justify-center p-2.5 -m-1.5 rounded-lg text-slate-400 hover:text-blue-500 transition-colors"
                   title={isAr ? "تعديل" : "Edit"}
                 >
                   <Pencil size={16} />
@@ -110,7 +110,7 @@ export default async function AdminCollectionsPage({
                 <PublishToggle entity="item" id={item.id} published={item.published} />
                 <Link
                   href={`/${locale}/admin/items/${item.id}`}
-                  className="text-slate-400 hover:text-blue-500 transition-colors"
+                  className="inline-flex items-center justify-center p-2.5 -m-1.5 rounded-lg text-slate-400 hover:text-blue-500 transition-colors"
                   title={isAr ? "تعديل" : "Edit"}
                 >
                   <Pencil size={16} />

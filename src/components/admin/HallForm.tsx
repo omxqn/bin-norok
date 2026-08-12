@@ -135,7 +135,7 @@ export function HallForm({ hall, locale }: { hall?: HallFormData; locale: string
       />
 
       <label className="flex items-center gap-2 text-sm text-gray-700 font-medium">
-        <input type="checkbox" name="published" defaultChecked={initial.published} className="rounded w-4 h-4" />
+        <input type="checkbox" name="published" defaultChecked={initial.published} className="rounded w-5 h-5" />
         {isAr ? "منشورة (تظهر في الموقع)" : "Published (visible on the site)"}
       </label>
       <div className="flex gap-3 pt-2">

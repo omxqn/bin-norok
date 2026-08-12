@@ -51,21 +51,21 @@ export function MessageActions({
     <div className="flex items-center gap-3">
       <button
         onClick={() => update({ isRead: !isRead, isArchived }, isRead ? "Marked as unread" : "Marked as read")}
-        className="text-slate-400 hover:text-blue-500 transition-colors"
+        className="inline-flex items-center justify-center p-2.5 -m-1.5 rounded-lg text-slate-400 hover:text-blue-500 transition-colors"
         title={isRead ? "Mark as unread" : "Mark as read"}
       >
         {isRead ? <Mail size={16} /> : <MailOpen size={16} />}
       </button>
       <button
         onClick={() => update({ isRead: true, isArchived: !isArchived }, isArchived ? "Restored" : "Archived")}
-        className="text-slate-400 hover:text-amber-500 transition-colors"
+        className="inline-flex items-center justify-center p-2.5 -m-1.5 rounded-lg text-slate-400 hover:text-amber-500 transition-colors"
         title={isArchived ? "Restore" : "Archive"}
       >
         {isArchived ? <ArchiveRestore size={16} /> : <Archive size={16} />}
       </button>
       <button
         onClick={handleDelete}
-        className="text-slate-400 hover:text-red-500 transition-colors"
+        className="inline-flex items-center justify-center p-2.5 -m-1.5 rounded-lg text-slate-400 hover:text-red-500 transition-colors"
         title="Delete"
       >
         <Trash2 size={16} />

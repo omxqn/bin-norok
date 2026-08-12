@@ -61,7 +61,7 @@ export function GuestbookActions({
       </button>
       <button
         onClick={handleDelete}
-        className="text-slate-400 hover:text-red-500 transition-colors"
+        className="inline-flex items-center justify-center p-2.5 -m-1.5 rounded-lg text-slate-400 hover:text-red-500 transition-colors"
         title="Delete"
       >
         <Trash2 size={16} />

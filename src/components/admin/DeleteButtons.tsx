@@ -37,7 +37,7 @@ function DeleteIcon({ isPending, onClick }: { isPending: boolean; onClick: () =>
     <button
       onClick={onClick}
       disabled={isPending}
-      className="text-slate-400 hover:text-red-500 transition-colors disabled:opacity-50"
+      className="inline-flex items-center justify-center p-2.5 -m-1.5 rounded-lg text-slate-400 hover:text-red-500 transition-colors disabled:opacity-50"
       title="Delete"
     >
       {isPending ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}

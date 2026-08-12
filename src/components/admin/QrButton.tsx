@@ -25,7 +25,7 @@ export function QrButton({ itemId, title }: { itemId: string; title: string }) {
     <>
       <button
         onClick={generate}
-        className="text-slate-400 hover:text-primary transition-colors"
+        className="inline-flex items-center justify-center p-2.5 -m-1.5 rounded-lg text-slate-400 hover:text-primary transition-colors"
         title="QR code"
       >
         <QrCode size={16} />

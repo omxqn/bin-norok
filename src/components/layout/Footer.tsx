@@ -50,7 +50,9 @@ export function Footer({
             <Link
               key={link.name}
               href={link.href}
-              className="hover:text-gold-2 transition-colors text-xs md:text-sm font-medium"
+              // py-2 on a 16px line gives a ~36px touch target on a phone
+              // without changing the desktop look — gap-y-2 absorbs it.
+              className="hover:text-gold-2 transition-colors text-xs md:text-sm font-medium py-2 md:py-0"
             >
               {link.name}
             </Link>
@@ -59,24 +61,26 @@ export function Footer({
 
         {/* Contact Info & Socials */}
         <div className="flex flex-wrap justify-center items-center gap-4 text-[#B8A892] text-xs md:text-sm" dir="ltr">
-          <a href={`tel:${contact.phoneHref}`} className="flex items-center gap-1.5 hover:text-gold-2 transition-colors">
+          {/* Phone, mail and the social icons are the smallest things on the
+              page — padded to a thumb-sized target rather than resized. */}
+          <a href={`tel:${contact.phoneHref}`} className="flex items-center gap-1.5 hover:text-gold-2 transition-colors py-2">
             <Icon name="phone" size={14} className="text-gold-dark" />
             {contact.phone}
           </a>
           <span className="hidden md:inline text-gold/30">·</span>
-          <a href={`mailto:${contact.email}`} className="flex items-center gap-1.5 hover:text-gold-2 transition-colors">
+          <a href={`mailto:${contact.email}`} className="flex items-center gap-1.5 hover:text-gold-2 transition-colors py-2">
             <Icon name="email" size={14} className="text-gold-dark" />
             {contact.email}
           </a>
           <span className="hidden md:inline text-gold/30">·</span>
-          <div className="flex gap-3">
-            <a href={contact.instagram} aria-label="Instagram" className="hover:text-gold-2 transition-colors">
+          <div className="flex gap-1">
+            <a href={contact.instagram} aria-label="Instagram" className="hover:text-gold-2 transition-colors inline-flex items-center justify-center w-11 h-11">
               <Icon name="instagram" size={15} />
             </a>
-            <a href="#" aria-label="X" className="hover:text-gold-2 transition-colors">
+            <a href="#" aria-label="X" className="hover:text-gold-2 transition-colors inline-flex items-center justify-center w-11 h-11">
               <Icon name="x" size={15} />
             </a>
-            <a href={`https://wa.me/${contact.whatsapp}`} aria-label="WhatsApp" className="hover:text-gold-2 transition-colors">
+            <a href={`https://wa.me/${contact.whatsapp}`} aria-label="WhatsApp" className="hover:text-gold-2 transition-colors inline-flex items-center justify-center w-11 h-11">
               <Icon name="whatsapp" size={15} />
             </a>
           </div>
@@ -90,10 +94,10 @@ export function Footer({
               : `© ${new Date().getFullYear()} Bin Norouk Museum. All rights reserved.`}
           </p>
           <div className="flex gap-4">
-            <Link href="#" className="hover:text-gold-2 transition-colors">
+            <Link href="#" className="hover:text-gold-2 transition-colors py-2">
               {locale === "ar" ? "الشروط والأحكام" : "Terms"}
             </Link>
-            <Link href="#" className="hover:text-gold-2 transition-colors">
+            <Link href="#" className="hover:text-gold-2 transition-colors py-2">
               {locale === "ar" ? "الخصوصية" : "Privacy"}
             </Link>
           </div>
