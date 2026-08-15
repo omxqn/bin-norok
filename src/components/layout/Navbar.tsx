@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
@@ -80,10 +81,21 @@ export function Navbar({ disabledPages = [] }: { disabledPages?: string[] }) {
           {/* Logo */}
           <Link
             href={`/${locale}`}
-            className="flex items-center gap-2 text-xl md:text-2xl font-bold tracking-tight text-[#F0E8D2] hover:text-gold-2 transition-colors font-[family-name:var(--font-cormorant)] rtl:font-[family-name:var(--font-amiri)] shrink-0"
+            aria-label={isAr ? "متحف بن نوروك — الصفحة الرئيسية" : "Bin Norook Museum — Home"}
+            className="flex items-center gap-2.5 text-xl md:text-2xl font-bold tracking-tight text-[#F0E8D2] hover:text-gold-2 transition-colors font-[family-name:var(--font-cormorant)] rtl:font-[family-name:var(--font-amiri)] shrink-0"
           >
-            <span className="text-gold text-[9px] leading-none">◆</span>
-            {isAr ? "متحف بن نوروك" : "Bin Norouk"}
+            <Image
+              src="/logo-mark.png"
+              alt=""
+              width={620}
+              height={396}
+              priority
+              sizes="52px"
+              className="w-[52px] h-auto rounded-sm ring-1 ring-gold/30 shrink-0"
+            />
+            <span className="hidden sm:inline">
+              {isAr ? "متحف بن نوروك" : "Bin Norook"}
+            </span>
           </Link>
 
           {/* Desktop links */}

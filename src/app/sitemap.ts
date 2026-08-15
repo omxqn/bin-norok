@@ -1,8 +1,7 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { getDisabledPages, type PageSlug } from "@/lib/page-toggles";
-
-const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+import { siteUrl as appUrl } from "@/lib/site-url";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // The sitemap is prerendered at build time, when the database may be

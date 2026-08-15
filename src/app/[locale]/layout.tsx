@@ -10,6 +10,9 @@ import { Footer } from "@/components/layout/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { getSiteContact } from "@/lib/site-settings";
 import { getDisabledPages } from "@/lib/page-toggles";
+import { siteUrl } from "@/lib/site-url";
+import { StructuredData } from "@/components/StructuredData";
+import type { Metadata } from "next";
 import "../globals.css";
 
 const amiri = Amiri({
@@ -39,25 +42,85 @@ const plexArabic = IBM_Plex_Sans_Arabic({
   variable: "--font-plex-arabic",
 });
 
-const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const isAr = locale === "ar";
 
-export const metadata = {
-  metadataBase: new URL(appUrl),
-  title: "Bin Norouk Museum | متحف بن نوروك",
-  description: "Memory of Sohar and Omani Heritage | ذاكرة صحار وتراث البيت العماني",
-  openGraph: {
-    title: "Bin Norouk Museum | متحف بن نوروك",
-    description: "Memory of Sohar and Omani Heritage | ذاكرة صحار وتراث البيت العماني",
-    type: "website",
-    locale: "ar_OM",
-    siteName: "Bin Norouk Museum",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Bin Norouk Museum | متحف بن نوروك",
-    description: "Memory of Sohar and Omani Heritage",
-  },
-};
+  const title = isAr
+    ? "متحف بن نوروك | ذاكرة صحار وتراث البيت العماني"
+    : "Bin Norook Museum | Memory of Sohar and Omani Heritage";
+
+  const description = isAr
+    ? "متحف بن نوروك في صحار، سلطنة عُمان — مجموعة من الوثائق والصور والعملات والطوابع والمقتنيات التي تحفظ ذاكرة صحار وتراث البيت العماني. خطط لزيارتك واحجز جولتك."
+    : "Bin Norook Museum in Sohar, Oman — documents, photographs, coins, stamps and heirlooms preserving the memory of Sohar and the heritage of the Omani home. Plan your visit and book a tour.";
+
+  return {
+    metadataBase: new URL(siteUrl),
+    // Per-page titles fill the template; the home page uses `default`.
+    title: {
+      default: title,
+      template: isAr ? "%s | متحف بن نوروك" : "%s | Bin Norook Museum",
+    },
+    description,
+    applicationName: isAr ? "متحف بن نوروك" : "Bin Norook Museum",
+    // hreflang: tells search engines these are translations of one another
+    // rather than duplicate content competing with each other.
+    alternates: {
+      canonical: `${siteUrl}/${locale}`,
+      languages: {
+        ar: `${siteUrl}/ar`,
+        en: `${siteUrl}/en`,
+        "x-default": `${siteUrl}/ar`,
+      },
+    },
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      url: `${siteUrl}/${locale}`,
+      locale: isAr ? "ar_OM" : "en_OM",
+      alternateLocale: isAr ? "en_OM" : "ar_OM",
+      siteName: isAr ? "متحف بن نوروك" : "Bin Norook Museum",
+      images: [
+        {
+          url: "/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: isAr ? "متحف بن نوروك" : "Bin Norook Museum",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/og-image.png"],
+    },
+    icons: {
+      icon: [
+        { url: "/favicon.ico", sizes: "any" },
+        { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
+        { url: "/icon-512.png", type: "image/png", sizes: "512x512" },
+      ],
+      apple: [{ url: "/apple-icon.png", sizes: "180x180" }],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
+    formatDetection: { telephone: true, address: true },
+  };
+}
 
 export default async function LocaleLayout({
   children,
@@ -84,6 +147,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} dir={dir} className={`${amiri.variable} ${cormorant.variable} ${outfit.variable} ${notoArabic.variable} ${plexArabic.variable}`}>
       <body>
+        <StructuredData locale={locale} contact={contact} />
         <NextIntlClientProvider messages={messages}>
           <Navbar disabledPages={disabledPages} />
           <main className="min-h-screen bg-background text-foreground">

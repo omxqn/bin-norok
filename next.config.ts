@@ -13,16 +13,19 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 // src/proxy.ts — see next/dist/docs/01-app/02-guides/content-security-policy.md
 const contentSecurityPolicy = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  // va.vercel-scripts.com serves the Vercel Analytics script in development;
+  // in production it is proxied from this origin.
+  "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' blob: data: https://images.unsplash.com https://*.public.blob.vercel-storage.com",
   "font-src 'self' data:",
-  "connect-src 'self'",
+  "connect-src 'self' https://va.vercel-scripts.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
   "frame-ancestors 'none'",
-  'upgrade-insecure-requests',
+  // No 'upgrade-insecure-requests': browsers ignore it in a report-only
+  // policy and log a console error. Add it when this is enforced.
 ].join('; ');
 
 // Security headers applied to every response

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import { usePathname } from "next/navigation";
@@ -37,10 +38,19 @@ export function Footer({
     <footer className="bg-heritage-header text-[#EDE6D8] pt-10 pb-6 border-t border-gold/20 mt-auto">
       <div className="container mx-auto px-4 md:px-8 text-center flex flex-col items-center gap-5">
 
-        {/* Museum name with heritage mark */}
-        <h3 className="flex items-center gap-2 text-lg md:text-xl font-bold tracking-tight">
+        {/* Museum logo and name */}
+        <Image
+          src="/logo-mark.png"
+          alt={locale === "ar" ? "متحف بن نوروك" : "Bin Norook Museum"}
+          width={620}
+          height={396}
+          sizes="132px"
+          className="w-[132px] h-auto rounded-sm ring-1 ring-gold/25"
+        />
+
+        <h3 className="flex items-center gap-2 text-lg md:text-xl font-bold tracking-tight -mt-1">
           <span className="text-gold text-[9px] leading-none">◆</span>
-          {locale === "ar" ? "متحف بن نوروك" : "Bin Norouk Museum"}
+          {locale === "ar" ? "متحف بن نوروك" : "Bin Norook Museum"}
           <span className="text-gold text-[9px] leading-none">◆</span>
         </h3>
 

@@ -7,35 +7,55 @@ import { sanitizeEmail } from "@/lib/sanitize";
 import { locales, defaultLocale, type Locale } from "@/i18n/config";
 import { headers } from "next/headers";
 
-export async function loginAction(formData: FormData) {
+/** Error codes the login form translates for display. */
+export type LoginState = { error: "credentials" | "rateLimit" | "server" } | null;
+
+/**
+ * Signs in and redirects, server-side.
+ *
+ * Deliberately a server action rather than the client-side `signIn(...,
+ * { redirect: false })` this form used to call: that approach only works once
+ * React has hydrated. Before then the browser falls back to a native form
+ * submit, which reloads the page and appends the password to the URL as a
+ * query string — visible in history, logs and the Referer header.
+ *
+ * signIn() signals its redirect by throwing, so the catch below must rethrow
+ * anything that is not an AuthError.
+ */
+export async function loginAction(
+  _prevState: LoginState,
+  formData: FormData
+): Promise<LoginState> {
   const email = sanitizeEmail(String(formData.get("email") ?? ""));
   const password = String(formData.get("password") ?? "");
+
+  const requested = String(formData.get("locale") ?? "");
+  const locale = locales.includes(requested as Locale) ? requested : defaultLocale;
 
   const headerList = await headers();
   const ip = headerList.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
 
   const rate = checkRateLimit(`${ip}:${email}`, "login");
   if (!rate.success) {
-    return { error: "Too many login attempts. Please try again later." };
+    return { error: "rateLimit" };
   }
 
   try {
     await signIn("credentials", {
       email,
       password,
-      redirectTo: "/admin",
+      // Locale-aware: the old "/admin" has no locale prefix and does not
+      // resolve to a real route.
+      redirectTo: `/${locale}/admin`,
     });
   } catch (error) {
     if (error instanceof AuthError) {
-      switch (error.type) {
-        case "CredentialsSignin":
-          return { error: "Invalid credentials." };
-        default:
-          return { error: "Something went wrong." };
-      }
+      return { error: error.type === "CredentialsSignin" ? "credentials" : "server" };
     }
     throw error;
   }
+
+  return null;
 }
 
 /**

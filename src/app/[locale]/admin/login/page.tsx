@@ -1,47 +1,51 @@
 "use client";
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { useLocale } from "next-intl";
+import { loginAction, type LoginState } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Lock, Mail, Loader2 } from "lucide-react";
 
+// The submit button lives in its own component because useFormStatus only
+// reports the pending state of a parent <form>.
+function SubmitButton({ isAr }: { isAr: boolean }) {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button
+      type="submit"
+      className="w-full h-12 text-lg font-bold rounded-xl"
+      disabled={pending}
+    >
+      {pending ? <Loader2 className="h-5 w-5 animate-spin" /> : isAr ? "دخول" : "Sign In"}
+    </Button>
+  );
+}
+
 export default function AdminLoginPage() {
-  const router = useRouter();
   const locale = useLocale();
   const isAr = locale === "ar";
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
+  // Posts to a server action, so sign-in works even before React hydrates —
+  // no native GET fallback that reloads the page with the password in the URL.
+  const [state, formAction] = useActionState<LoginState, FormData>(loginAction, null);
 
-    try {
-      const res = await signIn("credentials", {
-        redirect: false,
-        email,
-        password,
-      });
-
-      if (res?.error) {
-        setError(isAr ? "البريد الإلكتروني أو كلمة المرور غير صحيحة" : "Invalid email or password");
-        setIsLoading(false);
-      } else {
-        router.push(`/${locale}/admin`);
-        router.refresh();
-      }
-    } catch (err) {
-      setError(isAr ? "حدث خطأ غير متوقع" : "An unexpected error occurred");
-      setIsLoading(false);
-    }
-  };
+  const errorMessage = !state?.error
+    ? ""
+    : state.error === "rateLimit"
+      ? isAr
+        ? "محاولات كثيرة. يرجى المحاولة لاحقاً."
+        : "Too many attempts. Please try again later."
+      : state.error === "credentials"
+        ? isAr
+          ? "البريد الإلكتروني أو كلمة المرور غير صحيحة"
+          : "Invalid email or password"
+        : isAr
+          ? "حدث خطأ غير متوقع"
+          : "An unexpected error occurred";
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#453723] to-[#2a2014]">
@@ -59,13 +63,19 @@ export default function AdminLoginPage() {
           </p>
         </div>
 
-        {error && (
-          <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm font-bold text-center">
-            {error}
+        {errorMessage && (
+          <div
+            role="alert"
+            className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm font-bold text-center"
+          >
+            {errorMessage}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        {/* No method/encType: React sets POST and the correct encoding itself
+            when the action is a function, and specifying them is overridden. */}
+        <form action={formAction} className="space-y-6">
+          <input type="hidden" name="locale" value={locale} />
           <div className="space-y-2">
             <Label htmlFor="email">{isAr ? "البريد الإلكتروني" : "Email Address"}</Label>
             <div className="relative">
@@ -74,13 +84,12 @@ export default function AdminLoginPage() {
               </div>
               <Input
                 id="email"
+                name="email"
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="username"
                 placeholder="admin@museum.com"
                 className="rtl:pr-10 ltr:pl-10 h-12"
                 required
-                disabled={isLoading}
               />
             </div>
           </div>
@@ -93,28 +102,17 @@ export default function AdminLoginPage() {
               </div>
               <Input
                 id="password"
+                name="password"
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
                 placeholder="••••••••"
                 className="rtl:pr-10 ltr:pl-10 h-12"
                 required
-                disabled={isLoading}
               />
             </div>
           </div>
 
-          <Button 
-            type="submit" 
-            className="w-full h-12 text-lg font-bold rounded-xl"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
-            ) : (
-              isAr ? "دخول" : "Sign In"
-            )}
-          </Button>
+          <SubmitButton isAr={isAr} />
         </form>
 
         <div className="mt-8 text-center text-xs text-ink-3">
