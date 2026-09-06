@@ -145,8 +145,8 @@ export function Navbar({ disabledPages = [] }: { disabledPages?: string[] }) {
             transition={{ duration: 0.3 }}
             className="lg:hidden fixed inset-0 z-[60] bg-gradient-to-b from-[#453723] to-[#2b2216] flex flex-col"
           >
-            <div className="flex items-center justify-between px-5 py-4 border-b border-gold/15 shrink-0">
-              <span className="flex items-center gap-2 text-xl font-bold text-[#F0E8D2] font-[family-name:var(--font-amiri)]">
+            <div className="flex items-center justify-between px-5 py-3 border-b border-gold/15 shrink-0">
+              <span className="flex items-center gap-2 text-lg font-bold text-[#F0E8D2] font-[family-name:var(--font-amiri)]">
                 <span className="text-gold text-[9px]">◆</span>
                 {isAr ? "متحف بن نوروك" : "Bin Norouk"}
               </span>
@@ -159,7 +159,7 @@ export function Navbar({ disabledPages = [] }: { disabledPages?: string[] }) {
               </button>
             </div>
 
-            <nav className="flex flex-col px-6 py-6 gap-1 flex-1 overflow-y-auto">
+            <nav className="flex flex-col justify-center px-6 py-2 gap-0 flex-1 overflow-y-auto">
               {navLinks.map((link, i) => {
                 const isActive = pathname === link.href;
                 return (
@@ -173,7 +173,7 @@ export function Navbar({ disabledPages = [] }: { disabledPages?: string[] }) {
                       href={link.href}
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={cn(
-                        "block text-2xl font-semibold py-3 border-b border-white/5 font-[family-name:var(--font-amiri)] transition-colors",
+                        "block text-lg sm:text-xl font-semibold py-2.5 border-b border-white/5 font-[family-name:var(--font-amiri)] transition-colors",
                         isActive ? "text-gold-2" : "text-[#F0E8D2]/85 hover:text-gold-2"
                       )}
                     >
@@ -185,11 +185,11 @@ export function Navbar({ disabledPages = [] }: { disabledPages?: string[] }) {
             </nav>
 
             {isVisitEnabled && (
-              <div className="shrink-0 p-6 border-t border-gold/15">
+              <div className="shrink-0 p-4 border-t border-gold/15">
                 <Link
                   href={`/${locale}/visit`}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full bg-gold hover:bg-gold-2 text-[#1a1510] font-bold text-sm tracking-[0.06em] uppercase px-6 py-4 rounded-lg transition-colors shadow-lg"
+                  className="flex items-center justify-center gap-2 w-full bg-gold hover:bg-gold-2 text-[#1a1510] font-bold text-sm tracking-[0.06em] uppercase px-6 py-3.5 rounded-lg transition-colors shadow-lg"
                 >
                   {t("visit")}
                   <Arrow className="w-4 h-4" />

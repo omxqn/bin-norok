@@ -36,11 +36,6 @@ export default async function HallDetailsPage({
     where: { slug },
     include: {
       images: { orderBy: { order: "asc" } },
-      collectionItems: {
-        where: { published: true },
-        include: { category: true },
-        orderBy: { createdAt: "desc" },
-      },
     },
   });
 
@@ -50,13 +45,14 @@ export default async function HallDetailsPage({
 
   const longDescription = getLocalized(hall, "longDescription", locale);
 
-  // Prefer the curated gallery; fall back to main image + item photos
-  const allImages =
+  // Only the hall's own photos: its curated gallery, otherwise its main
+  // image. Collection-item photos are deliberately excluded — most rows still
+  // carry the seeded placeholder path, so they showed up as broken slides.
+  const allImages = (
     hall.images.length > 0
       ? hall.images.map((img) => img.path)
-      : (Array.from(
-          new Set([hall.imagePath, ...hall.collectionItems.map((item) => item.imagePath)])
-        ).filter(Boolean) as string[]);
+      : [hall.imagePath]
+  ).filter(Boolean) as string[];
 
   return (
     <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto min-h-screen">
