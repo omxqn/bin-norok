@@ -26,7 +26,7 @@ const FALLBACK: SiteContact = {
   phone: "+968 99339323",
   phoneHref: "+96899339323",
   whatsapp: "96899339323",
-  email: "zak.norocinvest@gmail.com",
+  email: "Binnorok2020@gmail.com",
   instagram: "#",
 };
 

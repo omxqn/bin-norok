@@ -31,7 +31,7 @@ export function Hero({ disabledPages = [] }: { disabledPages?: string[] }) {
   }, []);
 
   const quickInfo = [
-    { icon: Clock, label: isAr ? "ساعات العمل" : "Open", value: isAr ? "٩ص – ٥م" : "9AM – 5PM" },
+    { icon: Clock, label: isAr ? "ساعات العمل" : "Open", value: isAr ? "٩–١٢ص · ٥–٧م" : "9–12AM · 5–7PM" },
     { icon: LayoutGrid, label: isAr ? "قاعات العرض" : "Halls", value: isAr ? "٦ قاعات" : "6 Halls" },
     { icon: MapPin, label: isAr ? "الموقع" : "Location", value: isAr ? "صحار، عُمان" : "Sohar, Oman" },
     { icon: CalendarCheck, label: isAr ? "الزيارة" : "Visit", value: isAr ? "بالحجز المسبق" : "By booking" },
