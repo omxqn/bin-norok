@@ -14,12 +14,14 @@ export function VisitPageContent() {
 
   const hours = isAr
     ? [
-        { day: "الفترة الصباحية", from: "٩:٠٠ ص", to: "١٢:٠٠ م" },
-        { day: "الفترة المسائية", from: "٥:٠٠ م", to: "٧:٠٠ م" },
+        { day: "السبت إلى الخميس", from: "٩:٠٠ ص", to: "١٢:٠٠ م" },
+        { day: "السبت إلى الخميس", from: "٥:٠٠ م", to: "٧:٠٠ م" },
+        { day: "الجمعة", from: "٥:٠٠ م", to: "٧:٠٠ م" },
       ]
     : [
-        { day: "Morning", from: "9:00 AM", to: "12:00 PM" },
-        { day: "Evening", from: "5:00 PM", to: "7:00 PM" },
+        { day: "Sat – Thu", from: "9:00 AM", to: "12:00 PM" },
+        { day: "Sat – Thu", from: "5:00 PM", to: "7:00 PM" },
+        { day: "Friday", from: "5:00 PM", to: "7:00 PM" },
       ];
 
   return (
