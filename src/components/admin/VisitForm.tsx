@@ -1,15 +1,16 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { createOfficialVisit, updateOfficialVisit } from "@/actions/visits";
+import { createOfficialVisit, updateOfficialVisit, setVisitImages } from "@/actions/visits";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ImageUpload } from "@/components/admin/ImageUpload";
+import { MultiImageUpload } from "@/components/admin/MultiImageUpload";
 
 export interface VisitFormData {
   id?: string;
@@ -21,6 +22,7 @@ export interface VisitFormData {
   noteAr: string;
   noteEn: string;
   imagePath: string | null;
+  galleryPaths?: string[];
   order: number;
 }
 
@@ -33,6 +35,7 @@ const empty: VisitFormData = {
   noteAr: "",
   noteEn: "",
   imagePath: null,
+  galleryPaths: [],
   order: 0,
 };
 
@@ -40,6 +43,7 @@ export function VisitForm({ visit, locale }: { visit?: VisitFormData; locale: st
   const initial = visit ?? empty;
   const isAr = locale === "ar";
   const [isPending, startTransition] = useTransition();
+  const [gallery, setGallery] = useState<string[]>(initial.galleryPaths ?? []);
   const router = useRouter();
   const backHref = `/${locale}/admin/visits`;
 
@@ -59,13 +63,19 @@ export function VisitForm({ visit, locale }: { visit?: VisitFormData; locale: st
 
     startTransition(async () => {
       try {
-        if (visit?.id) {
-          await updateOfficialVisit(visit.id, data);
-          toast.success(isAr ? "تم حفظ الزيارة" : "Visit saved");
+        let visitId = visit?.id;
+        if (visitId) {
+          await updateOfficialVisit(visitId, data);
         } else {
-          await createOfficialVisit(data);
-          toast.success(isAr ? "تمت إضافة الزيارة" : "Visit created");
+          const created = await createOfficialVisit(data);
+          visitId = created.id;
         }
+        await setVisitImages(visitId, gallery);
+        toast.success(
+          visit?.id
+            ? isAr ? "تم حفظ الزيارة" : "Visit saved"
+            : isAr ? "تمت إضافة الزيارة" : "Visit created"
+        );
         router.push(backHref);
         router.refresh();
       } catch (error) {
@@ -120,7 +130,13 @@ export function VisitForm({ visit, locale }: { visit?: VisitFormData; locale: st
         </div>
       </div>
 
-      <ImageUpload initialPath={initial.imagePath ?? ""} label={isAr ? "صورة الزيارة (اختياري)" : "Visit Image (optional)"} isAr={isAr} />
+      <ImageUpload initialPath={initial.imagePath ?? ""} label={isAr ? "الصورة الرئيسية للزيارة (اختياري)" : "Main Visit Image (optional)"} isAr={isAr} />
+
+      <MultiImageUpload
+        paths={gallery}
+        onChange={setGallery}
+        label={isAr ? "صور إضافية للزيارة (تظهر في صفحة الزوّار)" : "Additional Visit Photos (shown on the visitors page)"}
+      />
 
       <div className="flex gap-3 pt-2">
         <Button type="submit" disabled={isPending} className="bg-primary hover:bg-primary/90 text-white px-8">

@@ -12,11 +12,17 @@ export default async function EditVisitPage({
 
   const visit = await prisma.officialVisit.findUnique({
     where: { id },
+    include: { images: { orderBy: { order: "asc" } } },
   });
 
   if (!visit) {
     notFound();
   }
+
+  const formValues = {
+    ...visit,
+    galleryPaths: visit.images.map((image) => image.path),
+  };
 
   return (
     <div className="space-y-6">
@@ -29,7 +35,7 @@ export default async function EditVisitPage({
         </p>
       </div>
 
-      <VisitForm visit={visit} locale={locale} />
+      <VisitForm visit={formValues} locale={locale} />
     </div>
   );
 }

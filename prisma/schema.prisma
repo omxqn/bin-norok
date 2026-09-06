@@ -104,7 +104,21 @@ model OfficialVisit {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  images VisitImage[]
+
   @@map("official_visits")
+}
+
+model VisitImage {
+  id        String   @id @default(cuid())
+  visitId   String
+  path      String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  visit OfficialVisit @relation(fields: [visitId], references: [id], onDelete: Cascade)
+
+  @@map("visit_images")
 }
 
 // ─── Collection Categories ────────────────────────────

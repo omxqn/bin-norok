@@ -3,6 +3,7 @@
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { SafeImage } from "@/components/SafeImage";
+import { HallImageSlider } from "@/components/halls/HallImageSlider";
 import { PageHero } from "@/components/PageHero";
 import { Guestbook } from "@/components/visitors/Guestbook";
 import { getLocalized, formatDate } from "@/lib/utils";
@@ -18,6 +19,7 @@ interface OfficialVisit {
   noteAr: string;
   noteEn: string;
   imagePath: string | null;
+  images?: { id: string; path: string }[];
 }
 
 interface NewsEvent {
@@ -97,20 +99,26 @@ export function VisitorsContent({
               className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg transition-shadow relative overflow-hidden group flex flex-col"
             >
               <div className="w-full h-56 relative overflow-hidden shrink-0 bg-gray-200">
-                {/* The admin uploads a photo per visit — show it instead of the
-                    grey placeholder that used to cover every card. */}
-                {visit.imagePath ? (
-                  <SafeImage
-                    src={visit.imagePath}
-                    alt={getLocalized(visit, "name", locale)}
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-16 h-16 bg-gray-300 rounded-full opacity-50"></div>
-                  </div>
-                )}
+                {/* Main photo first, then any extra photos the admin attached.
+                    More than one turns the header into a slideshow. */}
+                {(() => {
+                  const photos = [
+                    visit.imagePath,
+                    ...(visit.images ?? []).map((image) => image.path),
+                  ].filter(Boolean) as string[];
+
+                  return photos.length > 0 ? (
+                    <HallImageSlider
+                      images={photos}
+                      fallbackText={getLocalized(visit, "name", locale)}
+                      className="h-56"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-16 h-16 bg-gray-300 rounded-full opacity-50"></div>
+                    </div>
+                  );
+                })()}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                 <div className="absolute bottom-4 start-4 end-4">
                   <h3 className="text-xl font-bold text-white mb-1 drop-shadow-md">{getLocalized(visit, "name", locale)}</h3>
