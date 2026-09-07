@@ -88,13 +88,13 @@ export function ContactPageContent() {
                 </div>
               </a>
 
-              <a href="mailto:zak.norocinvest@gmail.com" className="flex items-center gap-5 group">
+              <a href="mailto:Binnorok2020@gmail.com" className="flex items-center gap-5 group">
                 <div className="w-11 h-11 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-all duration-300">
                   <svg className="w-5 h-5 text-white group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                 </div>
                 <div>
                   <p className="text-sm text-gray-400 font-medium mb-1">{locale === "ar" ? "البريد الإلكتروني" : "Email"}</p>
-                  <p className="font-bold text-sm tracking-wide text-white group-hover:text-primary transition-colors" dir="ltr">zak.norocinvest@gmail.com</p>
+                  <p className="font-bold text-sm tracking-wide text-white group-hover:text-primary transition-colors" dir="ltr">Binnorok2020@gmail.com</p>
                 </div>
               </a>
             </div>

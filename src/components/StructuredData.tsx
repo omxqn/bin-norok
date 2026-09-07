@@ -44,13 +44,13 @@ export function StructuredData({
         "@type": "OpeningHoursSpecification",
         dayOfWeek: ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
         opens: "09:00",
-        closes: "17:00",
+        closes: "12:00",
       },
       {
         "@type": "OpeningHoursSpecification",
-        dayOfWeek: "Friday",
-        opens: "13:30",
-        closes: "18:00",
+        dayOfWeek: ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        opens: "17:00",
+        closes: "19:00",
       },
     ],
     sameAs: [contact.instagram, `https://wa.me/${contact.whatsapp}`].filter(
