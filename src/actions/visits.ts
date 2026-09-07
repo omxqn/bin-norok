@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { isStorableImagePath } from "@/lib/image-src";
 import { revalidatePath } from "next/cache";
 
 // A "use server" export is a public POST endpoint, so this admin read is
@@ -137,6 +138,30 @@ export async function deleteOfficialVisit(id: string) {
       details: `Deleted official visit: ${visit.nameEn}`,
     },
   });
+
+  revalidatePath("/ar/visitors");
+  revalidatePath("/en/visitors");
+  revalidatePath("/ar/admin/visits");
+  revalidatePath("/en/admin/visits");
+}
+
+export async function setVisitImages(visitId: string, paths: string[]) {
+  const session = await auth();
+  const role = (session?.user as { role?: string } | undefined)?.role;
+  if (!session?.user || !role || !["ADMIN", "SUPER_ADMIN", "EDITOR"].includes(role)) {
+    throw new Error("Unauthorized");
+  }
+
+  // Mirrors setHallImages: replace the gallery atomically and keep only
+  // sources we recognise — local upload paths, or a Vercel Blob URL.
+  const safePaths = paths.filter(isStorableImagePath).slice(0, 20);
+
+  await prisma.$transaction([
+    prisma.visitImage.deleteMany({ where: { visitId } }),
+    prisma.visitImage.createMany({
+      data: safePaths.map((path, index) => ({ visitId, path, order: index })),
+    }),
+  ]);
 
   revalidatePath("/ar/visitors");
   revalidatePath("/en/visitors");

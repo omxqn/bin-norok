@@ -3,7 +3,10 @@ import { VisitorsContent } from "@/components/visitors/VisitorsContent";
 
 export default async function VisitorsPage() {
   const [govVisits, newsEvents, guestbookEntries] = await Promise.all([
-    prisma.officialVisit.findMany({ orderBy: { order: "asc" } }),
+    prisma.officialVisit.findMany({
+      orderBy: { order: "asc" },
+      include: { images: { orderBy: { order: "asc" } } },
+    }),
     prisma.newsEvent.findMany({
       where: { published: true },
       orderBy: { createdAt: "desc" },
