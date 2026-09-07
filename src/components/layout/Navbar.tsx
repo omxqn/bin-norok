@@ -159,7 +159,7 @@ export function Navbar({ disabledPages = [] }: { disabledPages?: string[] }) {
               </button>
             </div>
 
-            <nav className="flex flex-col justify-center px-6 py-2 gap-0 flex-1 overflow-y-auto">
+            <nav className="flex flex-col justify-center px-6 py-2 gap-0 flex-1 overflow-y-auto [@media(max-height:620px)]:py-0">
               {navLinks.map((link, i) => {
                 const isActive = pathname === link.href;
                 return (
@@ -173,7 +173,7 @@ export function Navbar({ disabledPages = [] }: { disabledPages?: string[] }) {
                       href={link.href}
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={cn(
-                        "block text-lg sm:text-xl font-semibold py-2.5 border-b border-white/5 font-[family-name:var(--font-amiri)] transition-colors",
+                        "block text-lg sm:text-xl font-semibold py-2.5 [@media(max-height:620px)]:py-2 border-b border-white/5 font-[family-name:var(--font-amiri)] transition-colors",
                         isActive ? "text-gold-2" : "text-[#F0E8D2]/85 hover:text-gold-2"
                       )}
                     >
@@ -185,7 +185,7 @@ export function Navbar({ disabledPages = [] }: { disabledPages?: string[] }) {
             </nav>
 
             {isVisitEnabled && (
-              <div className="shrink-0 p-4 border-t border-gold/15">
+              <div className="shrink-0 p-4 [@media(max-height:620px)]:p-2.5 border-t border-gold/15">
                 <Link
                   href={`/${locale}/visit`}
                   onClick={() => setIsMobileMenuOpen(false)}
