@@ -2,6 +2,8 @@
 
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
+import Link from "next/link";
+import { ExternalLink } from "lucide-react";
 import { SafeImage } from "@/components/SafeImage";
 import { HallImageSlider } from "@/components/halls/HallImageSlider";
 import { PageHero } from "@/components/PageHero";
@@ -31,6 +33,7 @@ interface NewsEvent {
   excerptEn: string | null;
   contentAr: string;
   contentEn: string;
+  slug: string;
   type: "NEWS" | "EVENT";
   imagePath: string | null;
   link: string | null;
@@ -180,11 +183,25 @@ export function VisitorsContent({
               <p className="text-sm text-gray-700 leading-relaxed mb-5 flex-1">
                 {getLocalized(news, "excerpt", locale) || getLocalized(news, "content", locale).substring(0, 150) + "..."}
               </p>
-              {news.link && (
-                <a href={news.link} target="_blank" rel="noopener noreferrer" className="inline-flex text-primary text-sm font-bold hover:underline">
-                  {isAr ? "اقرأ المزيد" : "Read more"} &rarr;
-                </a>
-              )}
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+                <Link
+                  href={`/${locale}/news/${news.slug}`}
+                  className="inline-flex items-center gap-1 text-primary text-sm font-bold hover:underline"
+                >
+                  {isAr ? "اقرأ الخبر" : "Read article"} &rarr;
+                </Link>
+                {news.link && (
+                  <a
+                    href={news.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-gray-500 text-sm font-bold hover:text-primary hover:underline"
+                  >
+                    {isAr ? "المصدر الخارجي" : "External source"}
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                )}
+              </div>
             </motion.div>
           ))}
           {newsEvents.length === 0 && (
