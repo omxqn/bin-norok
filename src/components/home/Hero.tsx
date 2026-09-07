@@ -82,7 +82,7 @@ export function Hero({ disabledPages = [] }: { disabledPages?: string[] }) {
             className="inline-flex items-center gap-2 text-[10px] md:text-[11px] font-bold tracking-[0.28em] uppercase text-gold-2 mb-5"
           >
             <span className="text-gold text-[7px]">◆</span>
-            {isAr ? "متحف تراثي خاص · صحار، سلطنة عُمان" : "Private Heritage Museum · Sohar, Oman"}
+            {isAr ? "صحار، سلطنة عُمان" : "Sohar, Oman"}
           </motion.p>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-[#FAF4E6] leading-[1.06] drop-shadow-[0_2px_20px_rgba(0,0,0,0.4)]">
