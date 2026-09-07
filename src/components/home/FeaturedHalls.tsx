@@ -74,6 +74,7 @@ export function FeaturedHalls({ halls }: { halls: FeaturedHallData[] }) {
                 <SafeImage 
                   src={hall.imagePath || "/images/museum/placeholders/hall-default.jpg"}
                   alt={isAr ? hall.titleAr : hall.titleEn}
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className={`object-cover transition-transform duration-1000 ${isActive ? 'scale-105' : 'scale-100 grayscale-[30%]'}`}
                 />
                 

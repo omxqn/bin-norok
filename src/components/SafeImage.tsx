@@ -15,7 +15,9 @@ import { isOptimizableImageSrc } from "@/lib/image-src";
 export function SafeImage({
   src,
   alt,
-  sizes,
+  // next/image warns when `fill` is used without `sizes`. Default to the
+  // full viewport so a caller that forgets it still gets a valid hint.
+  sizes = "100vw",
   className = "object-cover",
   priority,
 }: {

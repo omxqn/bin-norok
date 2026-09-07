@@ -41,6 +41,7 @@ export function HallImageSlider({ images, fallbackText, className = "h-72" }: { 
                 <SafeImage
                   src={currentImage}
                   alt="Background"
+                  sizes="(max-width: 1280px) 100vw, 1280px"
                   className="object-cover blur-xl opacity-40 scale-110"
                 />
               </div>
@@ -48,6 +49,7 @@ export function HallImageSlider({ images, fallbackText, className = "h-72" }: { 
               <SafeImage
                 src={currentImage}
                 alt="Hall Image"
+                sizes="(max-width: 1280px) 100vw, 1280px"
                 className="object-contain z-10"
               />
             </>
