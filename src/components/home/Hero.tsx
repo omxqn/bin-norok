@@ -5,7 +5,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import { Clock, LayoutGrid, MapPin, CalendarCheck, ChevronDown } from "lucide-react";
+import { Clock, LayoutGrid, MapPin, CalendarCheck, ChevronDown, ExternalLink } from "lucide-react";
 
 const HERO_IMAGES = [
   "/images/museum/halls/sultan room1.jpeg",
@@ -33,8 +33,14 @@ export function Hero({ disabledPages = [] }: { disabledPages?: string[] }) {
   const quickInfo = [
     { icon: Clock, label: isAr ? "ساعات العمل" : "Open", value: isAr ? "٩–١٢ص · ٥–٧م" : "9–12AM · 5–7PM" },
     { icon: LayoutGrid, label: isAr ? "قاعات العرض" : "Halls", value: isAr ? "٦ قاعات" : "6 Halls" },
-    { icon: MapPin, label: isAr ? "الموقع" : "Location", value: isAr ? "صحار، عُمان" : "Sohar, Oman" },
-    { icon: CalendarCheck, label: isAr ? "الزيارة" : "Visit", value: isAr ? "بالحجز المسبق" : "By booking" },
+    { icon: CalendarCheck, label: isAr ? "الزيارة" : "Visit", value: isAr ? "متاح للزيارة" : "Open to visitors" },
+    {
+      icon: MapPin,
+      label: isAr ? "الموقع" : "Location",
+      value: isAr ? "سلطنة عُمان · صحار" : "Oman · Sohar",
+      // Same destination the visit page maps to.
+      href: "https://www.google.com/maps?q=Ben+Norrock,+Sohar",
+    },
   ];
 
   return (
@@ -74,17 +80,6 @@ export function Hero({ disabledPages = [] }: { disabledPages?: string[] }) {
           transition={{ duration: 0.9, delay: 0.15, ease: "easeOut" }}
           className="max-w-2xl text-center md:text-start mx-auto md:mx-0 flex flex-col items-center md:items-start"
         >
-          {/* Overline */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="inline-flex items-center gap-2 text-[10px] md:text-[11px] font-bold tracking-[0.28em] uppercase text-gold-2 mb-5"
-          >
-            <span className="text-gold text-[7px]">◆</span>
-            {isAr ? "صحار، سلطنة عُمان" : "Sohar, Oman"}
-          </motion.p>
-
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-[#FAF4E6] leading-[1.06] drop-shadow-[0_2px_20px_rgba(0,0,0,0.4)]">
             {t("title")}
           </h1>
@@ -127,15 +122,41 @@ export function Hero({ disabledPages = [] }: { disabledPages?: string[] }) {
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12 pb-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/10 rounded-xl overflow-hidden border border-white/15 backdrop-blur-md">
-            {quickInfo.map((item) => (
-              <div key={item.label} className="flex items-center gap-3 bg-[#241c11]/40 px-4 py-3.5">
-                <item.icon className="w-5 h-5 text-gold-2 shrink-0" />
-                <div className="min-w-0">
-                  <p className="text-[10px] uppercase tracking-wider text-[#F0E8D8]/60 truncate">{item.label}</p>
-                  <p className="text-sm font-bold text-[#FAF4E6] truncate">{item.value}</p>
+            {quickInfo.map((item) => {
+              const body = (
+                <>
+                  <item.icon className="w-5 h-5 text-gold-2 shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-[10px] uppercase tracking-wider text-[#F0E8D8]/60 truncate">{item.label}</p>
+                    <p className="text-sm font-bold text-[#FAF4E6] truncate">{item.value}</p>
+                  </div>
+                </>
+              );
+              const cell = "flex items-center gap-3 bg-[#241c11]/40 px-4 py-3.5";
+
+              return item.href ? (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${cell} group cursor-pointer hover:bg-gold/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-2 transition-colors`}
+                >
+                  <item.icon className="w-5 h-5 text-gold-2 shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[10px] uppercase tracking-wider text-[#F0E8D8]/60 truncate">{item.label}</p>
+                    <p className="text-sm font-bold text-gold-2 underline decoration-gold/40 underline-offset-4 group-hover:decoration-gold-2 truncate">
+                      {item.value}
+                    </p>
+                  </div>
+                  <ExternalLink className="w-3.5 h-3.5 text-gold-2/70 shrink-0 group-hover:text-gold-2 transition-colors" />
+                </a>
+              ) : (
+                <div key={item.label} className={cell}>
+                  {body}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </motion.div>
