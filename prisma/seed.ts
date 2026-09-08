@@ -193,7 +193,10 @@ async function main() {
   console.log(`   ✓ Created ${categories.length} categories`);
 
   // ─── 4. Create Collection Items ─────────────────────
+  // CollectionItem has no unique column to upsert against, so a second run
+  // used to append a duplicate of all ten rows. Seed only when empty.
   console.log("\n🏺 Creating collection items...");
+  const existingItemCount = await prisma.collectionItem.count();
   const stampsCat = categories[0];
   const coinsCat = categories[1];
   const docsCat = categories[2];
@@ -211,7 +214,7 @@ async function main() {
   const sultanateHall = halls[4];
   const globalHall = halls[5];
 
-  const items = await Promise.all([
+  const items = existingItemCount > 0 ? [] : await Promise.all([
     prisma.collectionItem.create({
       data: {
         titleAr: "مجموعة طوابع عمانية نادرة",
@@ -383,7 +386,11 @@ async function main() {
       },
     }),
   ]);
-  console.log(`   ✓ Created ${items.length} collection items`);
+  console.log(
+    existingItemCount > 0
+      ? `   • Skipped collection items — ${existingItemCount} already present`
+      : `   ✓ Created ${items.length} collection items`
+  );
 
   // ─── 5. Create News/Events ──────────────────────────
   console.log("\n📰 Creating news and events...");
