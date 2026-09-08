@@ -40,9 +40,11 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# local database & runtime uploads
+# local database
 *.db
 *.db-journal
 prisma/dev.db
-/public/uploads/*
-!/public/uploads/.gitkeep
+
+# Uploads are tracked on purpose: the files under public/uploads were added
+# through the admin panel and exist nowhere else, since production writes to
+# Vercel Blob rather than to this directory.
